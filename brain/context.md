@@ -1,46 +1,57 @@
-# Context File
+# Context Index
 
 **Last Updated:** [DATE]
 
----
-
-## Current Focus
-
-### This Week
-- [ ] Task 1
-- [ ] Task 2
-- [ ] Task 3
+This is the main index. It loads every session. Keep it under 60 lines.
+Detailed context lives in `brain/contexts/` — load only what's relevant.
 
 ---
 
-## Active Projects
+## Who I Am
 
-| Project | Status | Notes |
-|---------|--------|-------|
-| Example | In progress | Brief description |
-
----
-
-## Key Decisions
-
-| Date | Decision | Why |
-|------|----------|-----|
-| | | |
+- **Name:** [Your name]
+- **Role:** [What you do]
+- **Company:** [Your company/project]
 
 ---
 
-## Next Priority Actions
+## Active Areas
 
-1.
-2.
-3.
-
----
-
-## Notes
-
-[Anything important to remember between sessions]
+| Area | Context File | Status |
+|------|-------------|--------|
+| Work | `contexts/work.md` | [Active/Paused] |
+| Projects | `contexts/projects.md` | [Active/Paused] |
+| Content | `contexts/content.md` | [Active/Paused] |
 
 ---
 
-*Update this file at end of session if there are significant changes*
+## This Week
+
+- [ ] Priority 1
+- [ ] Priority 2
+- [ ] Priority 3
+
+---
+
+## Quick Reference
+
+| Key | Value |
+|-----|-------|
+| Main tool | Claude Code |
+| Subscription | [Claude Pro / Max] |
+| Stack | [Your tech stack] |
+
+---
+
+## How This Works
+
+1. `/start` reads this index (always)
+2. You say what you're working on
+3. Claude loads only the relevant context file
+4. End of session: `/close` saves a report
+
+**Rule: never load all context files at once.**
+
+---
+
+*Add your areas to the table above. Create matching files in `contexts/`.*

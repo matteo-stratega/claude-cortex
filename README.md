@@ -1,22 +1,25 @@
-# Claude Code Workspace Setup
+# Claude Code Workspace Template
 
-A ready-to-use workspace template for Claude Code with persistent memory, custom commands, and organized structure.
+A ready-to-use workspace for Claude Code with modular memory, skills, hooks, and agents.
 
-## What You Get
+**This is the skeleton. You add the muscle.**
 
-- **Claude Code** - AI in your terminal
-- **Gemini CLI** - Backup AI from Google
-- **Persistent memory** - Claude remembers your projects between sessions
-- **Custom commands** - `/start` and `/close` for workflow automation
-- **Organized structure** - Folders for notes, docs, and context
+## What's Inside
+
+| Feature | What it does |
+|---------|-------------|
+| **Modular brain** | Context split into index + area modules. Load only what's relevant. |
+| **Skills** | `/start` and `/close` — context-aware session management |
+| **Hooks** | Enforcement scripts that fire automatically (agent loader, auto-save reminder) |
+| **Agent template** | Pattern for creating AI agents with distinct personalities |
+| **Organized structure** | Folders for brain, notes, docs, agents |
 
 ## Quick Start
 
 ### Prerequisites
 
-- **Mac users:** Xcode Command Line Tools (see Troubleshooting if prompted)
-- [Node.js](https://nodejs.org) (LTS version) - free
-- [Claude Pro subscription](https://claude.ai) ($20/month)
+- [Node.js](https://nodejs.org) (LTS version)
+- [Claude Code subscription](https://claude.ai) (Pro $20/mo or Max $100/mo)
 
 ### One-Click Installation
 
@@ -31,30 +34,12 @@ bash setup.sh
 irm https://raw.githubusercontent.com/matteo-stratega/claude-workspace-template/main/setup-windows.ps1 | iex
 ```
 
-This will:
-- Install Claude Code
-- Install Gemini CLI
-- Create your workspace folder
-- Set up the folder structure
-- Initialize git
-
 ### Manual Installation
 
 ```bash
-# 1. Install Claude Code
-npm install -g @anthropic-ai/claude-code
-
-# 2. Install Gemini CLI (optional)
-npm install -g @google/gemini-cli
-
-# 3. Clone this repo
 git clone https://github.com/matteo-stratega/claude-workspace-template.git my-workspace
 cd my-workspace
-
-# 4. Start Claude
 claude
-
-# 5. Begin session
 /start
 ```
 
@@ -62,17 +47,76 @@ claude
 
 ```
 workspace/
-├── CLAUDE.md              # Main instructions for Claude
+├── CLAUDE.md                    # Main instructions for Claude
 ├── brain/
-│   └── context.md         # Your current state and priorities
+│   ├── context.md               # Index — loads every session (~60 lines)
+│   └── contexts/                # Area-specific context (loaded on demand)
+│       ├── work.md              # Clients, deals, revenue
+│       ├── projects.md          # Active builds, side projects
+│       └── content.md           # Blog, social, video pipeline
+├── agents/
+│   └── example-agent.md         # Template for creating agents
 ├── notes/
-│   └── daily-summaries/   # Session reports
-├── docs/                  # Final documents
+│   └── daily-summaries/         # Session reports from /close
+├── docs/                        # Final documents
 └── .claude/
-    └── commands/
-        ├── start.md       # /start command
-        └── close.md       # /close command
+    ├── skills/                  # /start and /close skills
+    │   ├── start.md
+    │   └── close.md
+    ├── hooks/                   # Enforcement scripts
+    │   ├── agent-call-enforcer.py
+    │   └── context-auto-save.py
+    └── settings.json            # Hook configuration
 ```
+
+## How It Works
+
+### The Brain (Modular Context)
+
+Your context is split into an index and area-specific files:
+
+- `brain/context.md` — The index. 60 lines max. Loads every session.
+- `brain/contexts/*.md` — Detailed context per area. Loaded only when relevant.
+
+**Why?** One monolithic context file means Claude processes your deal pipeline when you're writing a blog post. Splitting it cuts noise and improves output quality.
+
+**Rule: never load all context files at once.**
+
+### Skills (Smart Commands)
+
+Skills live in `.claude/skills/` and replace the old `/commands` system:
+
+| Skill | What it does |
+|-------|-------------|
+| `/start` | Reads context index, checks last session, asks what you're working on, loads the right context file |
+| `/close` | Writes session report, updates context, confirms |
+
+To create your own skill, add a markdown file in `.claude/skills/`.
+
+### Hooks (Invisible Enforcement)
+
+Hooks fire on events — before you type, after Claude responds, when a session ends. Configured in `.claude/settings.json`.
+
+| Hook | Trigger | Purpose |
+|------|---------|---------|
+| `agent-call-enforcer.py` | UserPromptSubmit | Forces reading agent files instead of improvising |
+| `context-auto-save.py` | Stop | Reminds Claude to update context on close |
+
+To add your own hook: write a Python/JS script, add it to `.claude/settings.json`.
+
+### Agents (AI Personalities)
+
+Agents are markdown files in `agents/` that define distinct AI personalities with their own protocols, decision rules, and hard limits.
+
+**The test:** Does this agent need its own memory and personality that would conflict with another agent's? If yes, it's an agent. If no, it's a protocol inside an existing agent.
+
+See `agents/example-agent.md` for the pattern.
+
+## What's NOT in This Repo
+
+- **Your agents** — they encode your business, not a template
+- **MCP configurations** — they need your own API keys
+- **Your brain content** — the structure is here, the data is yours
 
 ## Usage
 
@@ -85,16 +129,10 @@ claude
 ```
 
 Claude will:
-1. Load your context
-2. Check your last session
-3. Propose today's priorities
-
-### During Work
-
-Ask Claude anything:
-- "Create a file for..."
-- "Summarize this document..."
-- "Help me organize..."
+1. Load your context index
+2. Check your last session report
+3. Ask what you're working on
+4. Load only the relevant context
 
 ### Ending a Session
 
@@ -103,101 +141,69 @@ Ask Claude anything:
 ```
 
 Claude will:
-1. Save a session report
+1. Write a session report to `notes/daily-summaries/`
 2. Update context if needed
 3. Confirm closure
 
 ## Customization
 
-### Edit CLAUDE.md
+### Add a Brain Module
 
-Add project-specific instructions:
+1. Create `brain/contexts/your-area.md`
+2. Add it to the table in `brain/context.md`
+3. Update the routing table in `.claude/skills/start.md`
 
-```markdown
-## Project Rules
+### Create an Agent
 
-- Always use TypeScript
-- Follow our coding standards in docs/standards.md
-- Ask before deleting files
-```
+1. Copy `agents/example-agent.md`
+2. Rename to `agents/your-agent.md`
+3. Fill in identity, personality, protocol, decision rules
+4. Call it with "call [agent-name]" in any session
 
-### Edit brain/context.md
+### Add a Hook
 
-Update with your projects:
+1. Write a script in `.claude/hooks/`
+2. Add it to `.claude/settings.json` under the right trigger
+3. Available triggers: `SessionStart`, `UserPromptSubmit`, `Stop`
 
-```markdown
-## Focus This Week
-- [ ] Launch new feature
-- [ ] Client meeting Thursday
-- [ ] Review Q1 metrics
+## Upgrading from v1
 
-## Active Projects
-| Project | Status | Notes |
-|---------|--------|-------|
-| Website | In progress | Landing page due Friday |
-| API | Planning | Start next week |
-```
+If you installed the template before February 2026:
+
+1. **Backup your context:** `cp brain/context.md brain/context.md.backup`
+2. **Pull the update:** `git pull origin main`
+3. **Split your context:** Move detailed sections from your old `context.md` into the new `brain/contexts/` files
+4. **Move commands to skills:** If you customized `.claude/commands/`, move them to `.claude/skills/`
+
+Your old commands still work — skills are an addition, not a replacement.
 
 ## Optional: Add Ollama (Local AI)
 
 For local AI models (free, private, offline):
 
 ```bash
-# Install Ollama
 brew install ollama
-# Or download from https://ollama.com
-
-# Pull a model
 ollama pull mistral:7b-instruct
-
-# Test it
 ollama run mistral:7b-instruct
 ```
-
-## Commands Reference
-
-| Command | What it does |
-|---------|--------------|
-| `/start` | Load context, show priorities |
-| `/close` | Save report, end session |
-| `/help` | Show help |
-| `/clear` | Clear conversation |
 
 ## Troubleshooting
 
 ### Xcode Command Line Tools (Mac)
 
-If you see a popup asking to install developer tools, click **Install** and wait for it to complete. Then run the setup script again.
-
-Or install manually:
+If you see a popup asking to install developer tools:
 ```bash
 xcode-select --install
 ```
 
----
-
 ### Permission Error (EACCES) on Mac
 
-If you see `EACCES: permission denied` during installation, choose ONE of these fixes:
-
----
-
-**Option A: Quick fix (just works)**
-
-Add `sudo` before the install commands:
+**Quick fix:**
 ```bash
 sudo npm install -g @anthropic-ai/claude-code
-sudo npm install -g @google/gemini-cli
 ```
 
-Then run the setup script again.
-
----
-
-**Option B: Proper fix (recommended)**
-
-This fixes npm permissions permanently. You only need to do this once, and you'll never see this error again:
-
+**Proper fix (recommended):**
 ```bash
 mkdir -p ~/.npm-global
 npm config set prefix '~/.npm-global'
@@ -205,22 +211,20 @@ echo 'export PATH=~/.npm-global/bin:$PATH' >> ~/.zshrc
 source ~/.zshrc
 ```
 
-Then run the setup script again:
-```bash
-curl -fsSL https://raw.githubusercontent.com/matteo-stratega/claude-workspace-template/main/setup.sh -o setup.sh
-bash setup.sh
-```
+## Video Tutorials
 
----
+- [Part 1: My AI Brain — 1-Click Setup](https://www.youtube.com/watch?v=FxcAz0oRD7A)
+- Part 2: Coming soon
 
-## Video Tutorial
+## Blog Posts
 
-- [My AI Brain: 1-Click Setup](https://www.youtube.com/watch?v=FxcAz0oRD7A)
+- [I Built an AI Brain That Runs My Entire Business](https://stratega.co/blog/my-ai-brain-behind-the-scenes)
+- [My AI Brain, One Month Later: What Changed](https://stratega.co/blog/my-ai-brain-part-2-one-month-later)
 
 ## Credits
 
-Created by [Matteo Lombardi](https://linkedin.com/in/matteolombardi9) - Growth Architect building in public.
+Created by [Matteo Lombardi](https://linkedin.com/in/matteolombardi9) — Growth Architect building in public.
 
 ## License
 
-MIT - Use it, modify it, share it.
+MIT — Use it, modify it, share it.
