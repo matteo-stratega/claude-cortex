@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!--
+    macOS LaunchAgent for Morning Brief
+
+    Setup:
+    1. Edit WorkingDirectory and ProgramArguments paths below
+    2. Copy to ~/Library/LaunchAgents/
+    3. Load: launchctl load ~/Library/LaunchAgents/com.cortex.morning-brief.plist
+    4. Unload: launchctl unload ~/Library/LaunchAgents/com.cortex.morning-brief.plist
+
+    Runs every day at 8:30 AM.
+    -->
+    <key>Label</key>
+    <string>com.cortex.morning-brief</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/bash</string>
+        <string>/Users/YOUR_USERNAME/workspace/scripts/morning-brief.sh</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>/Users/YOUR_USERNAME/workspace</string>
+
+    <key>StartCalendarInterval</key>
+    <dict>
+        <key>Hour</key>
+        <integer>8</integer>
+        <key>Minute</key>
+        <integer>30</integer>
+    </dict>
+
+    <key>StandardOutPath</key>
+    <string>/tmp/cortex-morning-brief.log</string>
+
+    <key>StandardErrorPath</key>
+    <string>/tmp/cortex-morning-brief-error.log</string>
+
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>/usr/local/bin:/usr/bin:/bin:/opt/homebrew/bin</string>
+    </dict>
+</dict>
+</plist>

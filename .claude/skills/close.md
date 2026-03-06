@@ -4,9 +4,9 @@ Execute the session close protocol:
 
 ## Step 1: Write Closing Report
 
-Create file `notes/daily-summaries/closing-DDMMYYYY.md`:
+Create or append to `notes/daily-summaries/closing-DDMMYYYY.md`:
 
-```
+```markdown
 # Closing [DATE]
 
 ## TL;DR
@@ -14,28 +14,55 @@ Create file `notes/daily-summaries/closing-DDMMYYYY.md`:
 - **Pending**: [what remains]
 - **Next**: [next priority action]
 
-## Files Created/Modified
-- [list of files touched]
+## Details
+[Brief summary of main activities — 3-5 sentences max]
 
-## Decisions Made
-- [any key decisions worth remembering]
+## Files Created/Modified
+
+| File | Action |
+|------|--------|
+| `path/to/file` | Created / Modified / Deleted |
+
+## Key Decisions
+
+| Decision | Why |
+|----------|-----|
+| [what was decided] | [rationale] |
 
 ---
 **Session Status**: Completed
 ```
 
-## Step 2: Update Context
+## Step 2: Update Context (MANDATORY)
 
-Update `brain/context.md` if there are:
-- New priorities to add to "This Week"
-- Completed tasks to remove
-- Status changes in Active Areas table
+Update `brain/context.md`:
+
+### Add
+- New priorities or decisions
+- Status changes on projects/deals
+- New pending tasks
+
+### Remove (this is not optional)
+
+| Section | Rule |
+|---------|------|
+| This Week | Check off completed items. Remove items done >3 days ago. |
+| Active Areas | Update status if anything changed |
+| Quick Reference | Update if key info changed |
+
+**Principle:** `context.md` is a SNAPSHOT of current state, not a history log. The history lives in closing reports.
 
 Also update the relevant `brain/contexts/*.md` file if project statuses changed.
 
-## Step 3: Confirm
+## Step 3: Multi-Session Handling
 
-Tell user: "Session closed. Report saved in [path]."
+If closing report for today already exists:
+- **APPEND** as `## Session N: [Topic]`
+- Do NOT overwrite earlier sessions
+
+## Step 4: Confirm
+
+Tell user: "Session closed. Report saved in `notes/daily-summaries/closing-DDMMYYYY.md`."
 
 ---
 

@@ -1,12 +1,12 @@
 <p align="center">
-  <h1 align="center">Claude Code Workspace Template</h1>
-  <p align="center">Run your business from a git repo. Persistent memory, specialized agents, auto-loading skills, enforcement hooks.</p>
+  <h1 align="center">Cortex</h1>
+  <p align="center">An operating system for Claude Code.<br/>Persistent memory, specialized agents, auto-loading skills, enforcement hooks.</p>
 </p>
 
 <p align="center">
-  <a href="https://github.com/matteo-stratega/claude-workspace-template/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-825af5" alt="License"></a>
-  <a href="https://github.com/matteo-stratega/claude-workspace-template/stargazers"><img src="https://img.shields.io/github/stars/matteo-stratega/claude-workspace-template?color=825af5" alt="Stars"></a>
-  <a href="https://github.com/matteo-stratega/claude-workspace-template/commits/main"><img src="https://img.shields.io/github/last-commit/matteo-stratega/claude-workspace-template?color=825af5" alt="Last Commit"></a>
+  <a href="https://github.com/matteo-stratega/claude-cortex/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-825af5" alt="License"></a>
+  <a href="https://github.com/matteo-stratega/claude-cortex/stargazers"><img src="https://img.shields.io/github/stars/matteo-stratega/claude-cortex?color=825af5" alt="Stars"></a>
+  <a href="https://github.com/matteo-stratega/claude-cortex/commits/main"><img src="https://img.shields.io/github/last-commit/matteo-stratega/claude-cortex?color=825af5" alt="Last Commit"></a>
 </p>
 
 <p align="center">
@@ -22,19 +22,19 @@ I use this exact architecture to run my solo consultancy — 9 projects, 160+ ta
 ## Quick Start
 
 ```bash
-git clone https://github.com/matteo-stratega/claude-workspace-template.git my-workspace
-cd my-workspace
+git clone https://github.com/matteo-stratega/claude-cortex.git cortex
+cd cortex
 claude
-/start
+/setup
 ```
 
-That's it. Claude reads your context, asks what you're working on, loads the right files.
+`/setup` walks you through filling in your context. Takes about 5 minutes.
 
 <details>
 <summary><b>One-liner install (Mac/Linux)</b></summary>
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/matteo-stratega/claude-workspace-template/main/setup.sh -o setup.sh
+curl -fsSL https://raw.githubusercontent.com/matteo-stratega/claude-cortex/main/setup.sh -o setup.sh
 bash setup.sh
 ```
 </details>
@@ -43,7 +43,7 @@ bash setup.sh
 <summary><b>Windows (PowerShell)</b></summary>
 
 ```powershell
-irm https://raw.githubusercontent.com/matteo-stratega/claude-workspace-template/main/setup-windows.ps1 | iex
+irm https://raw.githubusercontent.com/matteo-stratega/claude-cortex/main/setup-windows.ps1 | iex
 ```
 </details>
 
@@ -52,22 +52,32 @@ irm https://raw.githubusercontent.com/matteo-stratega/claude-workspace-template/
 ## What's Inside
 
 ```
-workspace/
-├── CLAUDE.md                    # Master instructions
+cortex/
+├── CLAUDE.md                    # Master instructions (routing, rules, structure)
+├── PATTERNS.md                  # Recipes and proven patterns
 ├── brain/
 │   ├── context.md               # Index — loads every session (~60 lines)
 │   └── contexts/                # Area-specific context (loaded on demand)
 │       ├── work.md              # Clients, deals, revenue
 │       ├── projects.md          # Active builds
 │       └── content.md           # Blog, social, video
-├── agents/
-│   └── example-agent.md         # Agent template
-├── notes/
-│   └── daily-summaries/         # Session reports from /close
+├── agents/                      # 4 ready-to-use agents
+│   ├── cto.md                   # Think > Plan > Execute, debugging protocol
+│   ├── content-strategist.md    # Framework-first writing, voice rules
+│   ├── growth-hacker.md         # ICE scoring, funnel audits
+│   └── war-council.md           # Multi-perspective decision making
+├── examples/                    # What it looks like in action
+│   ├── context-filled.md        # Brain after 2 weeks of real use
+│   ├── closing-report.md        # What /close generates
+│   └── war-council-output.md    # War council decision example
+├── scripts/
+│   ├── morning-brief.sh         # Automated daily brief (cron/launchd)
+│   └── com.cortex.morning-brief.plist  # macOS launchd config
+├── notes/daily-summaries/       # Session reports from /close
 ├── docs/                        # Final documents
 └── .claude/
-    ├── skills/                  # /start, /close
-    ├── hooks/                   # Enforcement scripts
+    ├── skills/                  # 7 skills
+    ├── hooks/                   # 3 enforcement hooks
     └── settings.json            # Hook config
 ```
 
@@ -81,31 +91,83 @@ Why? One monolithic context file means Claude processes your deal pipeline when 
 
 **Rule: never load all context files at once.**
 
+### Agents — AI Personalities
+
+Agents are markdown files with distinct personalities, protocols, and decision rules. Say "call [name]" to activate one.
+
+| Agent | What It Does |
+|-------|-------------|
+| **CTO** | Think > Plan > Execute. 5-step debugging protocol. Evaluates dependencies before installing. |
+| **Content Strategist** | Framework-first writing (PAS, AIDA, Hook-Story-Offer). Self-critique before publishing. Voice rules that kill AI-sounding copy. |
+| **Growth Hacker** | ICE scoring for experiments. Funnel audits. Experiment templates with hypothesis + success criteria. |
+| **War Council** | Three perspectives on any decision: Operator (speed), Strategist (long-term), Critic (failure modes). One clear recommendation. |
+
+Each agent has hard limits and decision rules. They don't just answer differently — they *think* differently.
+
+> **See it in action:** Check `examples/war-council-output.md` for a real War Council decision.
+
 ### Skills — Smart Commands
 
 | Skill | What it does |
 |-------|-------------|
-| `/start` | Reads context, checks last session, asks what you're working on, loads the right context |
-| `/close` | Writes session report, updates context, confirms |
+| `/setup` | **First-time guided onboarding** — fills in your context in 5 minutes |
+| `/start` | Reads context, checks last session, asks what you're working on |
+| `/close` | Writes session report, updates context, cleans up completed items |
+| `/brief` | Quick daily status overview — priorities, blockers, key numbers (20 lines) |
+| `/plan` | Breaks any task into phases with verification criteria |
+| `/review` | Code review checklist — security, simplicity, edge cases |
+| `/weekly` | Weekly retrospective — what shipped, time patterns, next week priorities |
 
 Add your own: drop a markdown file in `.claude/skills/`.
 
 ### Hooks — Invisible Enforcement
 
-Hooks fire on events — before you type, after a session ends. You don't invoke them. They just run.
+Hooks fire on events. You don't invoke them. They just run.
 
 | Hook | Trigger | Purpose |
 |------|---------|---------|
+| `file-guard.py` | PreToolUse | **Blocks** writes to `.env`, credentials, key files. Warns on CLAUDE.md edits. |
 | `agent-call-enforcer.py` | UserPromptSubmit | Forces reading agent files instead of improvising |
-| `context-auto-save.py` | Stop | Reminds to update context on close |
+| `context-auto-save.py` | Stop | Reminds to update context when running /close |
 
-### Agents — AI Personalities
+### Morning Brief — Automated Daily Status
 
-Agents are markdown files in `agents/` with distinct personalities, protocols, and decision rules.
+Run your brief on autopilot. The script calls Claude non-interactively, reads your context, and generates a 20-line status report.
 
-**The test:** Does this agent need its own memory and personality that would conflict with another agent's? If yes, it's an agent. If no, it's a protocol inside an existing agent.
+```bash
+# Run manually
+./scripts/morning-brief.sh
 
-Copy `agents/example-agent.md` to get started.
+# Cron (every day at 8:30 AM)
+crontab -e
+30 8 * * * cd /path/to/cortex && ./scripts/morning-brief.sh
+
+# macOS launchd (edit paths in the plist first)
+cp scripts/com.cortex.morning-brief.plist ~/Library/LaunchAgents/
+launchctl load ~/Library/LaunchAgents/com.cortex.morning-brief.plist
+```
+
+Output goes to `notes/daily-summaries/brief-YYYYMMDD.md` and stdout.
+
+## Examples
+
+The `examples/` folder shows what the system looks like after real use:
+
+- **`context-filled.md`** — A brain/context.md after 2 weeks, with real priorities, metrics, and tech stack
+- **`closing-report.md`** — What `/close` generates: TL;DR, files modified, key decisions
+- **`war-council-output.md`** — A real War Council deliberation on "should I launch a free tier?"
+
+## Patterns & Recipes
+
+**[Read PATTERNS.md](PATTERNS.md)** — a reference guide covering:
+
+- Context patterns (60-line rule, snapshot principle, context layering)
+- Agent patterns (agent vs protocol, decision tables, War Council pattern)
+- Skill patterns (structure, auto-loading, chaining)
+- Hook patterns (types, templates, ideas for custom hooks)
+- Session patterns (the session loop, multi-session days, weekly rhythm)
+- Common mistakes and how to avoid them
+- Scaling up (MCP integrations, local AI, multiple projects)
 
 ## What I Built With This
 
@@ -128,24 +190,43 @@ This isn't a demo. It's the architecture behind a real business:
 
 1. Create `brain/contexts/your-area.md`
 2. Add it to the routing table in `brain/context.md`
-3. Update `.claude/skills/start.md`
+3. Add a matching row to the `/start` skill routing table
 </details>
 
 <details>
 <summary><b>Create an agent</b></summary>
 
-1. Copy `agents/example-agent.md`
-2. Rename to `agents/your-agent.md`
-3. Fill in identity, personality, protocol, decision rules
+1. Create `agents/your-agent.md`
+2. Include: Identity, Personality, Core Protocol, Decision Rules, Hard Limits
+3. Add it to the agents table in `CLAUDE.md`
 4. Call it with "call [agent-name]" in any session
+
+**Tips:**
+- "Professional" means nothing. "Direct, no filler, never says 'great question'" means something.
+- Give it decision rules, not just personality. "When X happens, do Y."
+- Hard limits prevent the agent from doing things you'll regret.
+- **The test:** Does this agent need its own personality that would conflict with another? If yes, agent. If no, it's a protocol inside an existing agent.
+</details>
+
+<details>
+<summary><b>Add a skill</b></summary>
+
+1. Create `.claude/skills/your-skill.md`
+2. Structure: Step 1 → Step 2 → Step 3 → Output format → Rules
+3. Call it with `/your-skill` in any session
+
+Skills work best with: clear steps, a specific output format, and rules for edge cases.
 </details>
 
 <details>
 <summary><b>Add a hook</b></summary>
 
-1. Write a script in `.claude/hooks/`
-2. Add it to `.claude/settings.json` under the right trigger
-3. Available triggers: `SessionStart`, `UserPromptSubmit`, `Stop`
+1. Write a Python script in `.claude/hooks/`
+2. Read stdin (JSON), write stdout (JSON with `continue: true/false` and optional `message`)
+3. Add it to `.claude/settings.json` under the right trigger
+4. Available triggers: `PreToolUse`, `PostToolUse`, `UserPromptSubmit`, `Stop`
+
+Start with warnings (permissive) before blocks (restrictive). See `PATTERNS.md` for hook templates and ideas.
 </details>
 
 <details>
@@ -156,18 +237,9 @@ brew install ollama
 ollama pull mistral:7b-instruct
 ollama run mistral:7b-instruct
 ```
+
+Use for: batch classification, large document summarization, tasks that don't need Claude's full reasoning.
 </details>
-
-## Upgrading from v1
-
-If you installed before February 2026:
-
-1. Backup context: `cp brain/context.md brain/context.md.backup`
-2. Pull update: `git pull origin main`
-3. Split context: move sections into `brain/contexts/` files
-4. Move commands to skills: `.claude/commands/` → `.claude/skills/`
-
-Old commands still work — skills are an addition, not a replacement.
 
 ## Troubleshooting
 
