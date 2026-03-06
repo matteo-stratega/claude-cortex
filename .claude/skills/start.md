@@ -25,6 +25,7 @@ Based on the user's answer, load ONLY the matching context file from `brain/cont
 | Work, clients, sales, deals | `brain/contexts/work.md` |
 | Building, coding, projects | `brain/contexts/projects.md` |
 | Content, blog, social, video | `brain/contexts/content.md` |
+| Anything else | Ask: "Is this work, building, or content?" |
 
 **Never load all context files at once.** One area per session. If the user switches topics, load the new context file then.
 

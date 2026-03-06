@@ -120,7 +120,7 @@ Some skills should fire automatically based on what you're doing, not just when 
 
 Skills can reference other skills:
 - `/plan` creates a plan → user approves → each phase uses CTO agent
-- `/close` writes report → updates context → triggers weekly review if it's Friday
+- `/close` writes report → updates context → you can manually run `/weekly` on Fridays
 
 ---
 
@@ -142,7 +142,11 @@ Skills can reference other skills:
 import json, sys
 
 def main():
-    hook_input = json.loads(sys.stdin.read())
+    try:
+        hook_input = json.loads(sys.stdin.read())
+    except Exception:
+        print(json.dumps({"continue": True}))
+        return
 
     # Your logic here
     should_continue = True

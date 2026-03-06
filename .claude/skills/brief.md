@@ -37,3 +37,4 @@ Output this format:
 - Priorities come from context.md "This Week" section
 - If no closing report exists, skip "Yesterday" section
 - Don't load area context files — the brief uses the index only
+- If no numerical data in context, omit "Quick Numbers" rather than guessing

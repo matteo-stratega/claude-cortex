@@ -25,7 +25,7 @@ def main():
     tool_input = hook_input.get("tool_input", {})
 
     # Only check file-writing tools
-    if tool_name not in ("Write", "Edit"):
+    if tool_name not in ("Write", "Edit", "MultiEdit"):
         print(json.dumps({"continue": True}))
         return
 
@@ -49,8 +49,8 @@ def main():
         print(json.dumps(result))
         return
 
-    # Block: .credentials/ directory
-    if ".credentials" in file_path.split(os.sep):
+    # Block: .credentials/ directory (normalize slashes for cross-platform)
+    if ".credentials" in file_path.replace("\\", "/").split("/"):
         result = {
             "continue": False,
             "message": f"BLOCKED: Cannot write to .credentials/ directory. Credential files should not be managed by Claude."

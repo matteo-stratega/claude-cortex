@@ -32,7 +32,7 @@ def main():
         should_remind = True
     elif isinstance(transcript, list):
         for entry in transcript:
-            text = entry if isinstance(entry, str) else str(entry)
+            text = entry if isinstance(entry, str) else (entry.get("content", "") if isinstance(entry, dict) else str(entry))
             if any(ind in text.lower() for ind in close_indicators):
                 should_remind = True
                 break

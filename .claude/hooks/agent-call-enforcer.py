@@ -21,13 +21,14 @@ def main():
 
     patterns = [
         r"call\s+([\w-]+)",
+        r"chiama\s+([\w-]+)",
         r"use\s+([\w-]+)\s+agent",
         r"load\s+([\w-]+)\s+agent",
         r"switch\s+to\s+([\w-]+)",
     ]
 
     # Filter out common stop words that aren't agent names
-    stop_words = {"the", "a", "an", "my", "our", "this", "that", "it"}
+    stop_words = {"the", "a", "an", "my", "our", "this", "that", "it", "me", "you", "us", "back", "him", "her", "them"}
 
     for pattern in patterns:
         match = re.search(pattern, message)

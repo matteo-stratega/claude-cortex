@@ -11,7 +11,7 @@
 #
 # ============================================
 
-set -e
+set -eo pipefail
 
 # Colors
 RED='\033[0;31m'
@@ -207,7 +207,9 @@ cortex/
 │   └── contexts/                # Area context (load on demand)
 ├── agents/                      # 4 agents
 ├── examples/                    # What it looks like in action
-├── scripts/                     # Automation (morning brief)
+├── scripts/
+│   ├── morning-brief.sh         # Automated daily brief (cron/launchd)
+│   └── com.cortex.morning-brief.plist  # macOS launchd config
 ├── notes/daily-summaries/       # Session reports
 ├── docs/                        # Final documents
 └── .claude/
@@ -693,7 +695,7 @@ def main():
     tool_name = hook_input.get("tool_name", "")
     tool_input = hook_input.get("tool_input", {})
 
-    if tool_name not in ("Write", "Edit"):
+    if tool_name not in ("Write", "Edit", "MultiEdit"):
         print(json.dumps({"continue": True}))
         return
 
@@ -712,7 +714,7 @@ def main():
         print(json.dumps({"continue": False, "message": f"BLOCKED: Cannot write to '{basename}' — credential file."}))
         return
 
-    if ".credentials" in file_path.split(os.sep):
+    if ".credentials" in file_path.replace("\\", "/").split("/"):
         print(json.dumps({"continue": False, "message": "BLOCKED: Cannot write to .credentials/ directory."}))
         return
 
@@ -748,12 +750,13 @@ def main():
 
     patterns = [
         r"call\s+([\w-]+)",
+        r"chiama\s+([\w-]+)",
         r"use\s+([\w-]+)\s+agent",
         r"load\s+([\w-]+)\s+agent",
         r"switch\s+to\s+([\w-]+)",
     ]
 
-    stop_words = {"the", "a", "an", "my", "our", "this", "that", "it"}
+    stop_words = {"the", "a", "an", "my", "our", "this", "that", "it", "me", "you", "us", "back", "him", "her", "them"}
 
     for pattern in patterns:
         match = re.search(pattern, message)
@@ -800,7 +803,7 @@ def main():
         should_remind = True
     elif isinstance(transcript, list):
         for entry in transcript:
-            text = entry if isinstance(entry, str) else str(entry)
+            text = entry if isinstance(entry, str) else (entry.get("content", "") if isinstance(entry, dict) else str(entry))
             if any(ind in text.lower() for ind in close_indicators):
                 should_remind = True
                 break
@@ -1226,7 +1229,7 @@ cat > scripts/morning-brief.sh << 'SCRIPTEOF'
 # Usage: ./scripts/morning-brief.sh
 # Cron:  30 8 * * * cd /path/to/cortex && ./scripts/morning-brief.sh
 
-set -e
+set -eo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 WORKSPACE_DIR="$(dirname "$SCRIPT_DIR")"
@@ -1239,6 +1242,12 @@ fi
 
 if [ ! -f "brain/context.md" ]; then
     echo "Error: brain/context.md not found. Run /setup first."
+    exit 1
+fi
+
+if [ -z "$ANTHROPIC_API_KEY" ]; then
+    echo "Error: ANTHROPIC_API_KEY not set. Non-interactive mode requires an API key."
+    echo "Get one at https://console.anthropic.com"
     exit 1
 fi
 
@@ -1258,10 +1267,10 @@ if [ -f "$BRIEF_FILE" ]; then
     echo "---" >> "$BRIEF_FILE"
     echo "" >> "$BRIEF_FILE"
     echo "$BRIEF" >> "$BRIEF_FILE"
-    echo "Appended to $BRIEF_FILE"
+    echo "Appended to $BRIEF_FILE" >&2
 else
     echo "$BRIEF" > "$BRIEF_FILE"
-    echo "Saved to $BRIEF_FILE"
+    echo "Saved to $BRIEF_FILE" >&2
 fi
 SCRIPTEOF
 
@@ -1530,9 +1539,14 @@ node_modules/
 .credentials/
 *.pem
 *.key
+*.p12
+*.pfx
+id_rsa
+id_ed25519
 .env
-.env.local
+.env.*
 MASTER.env
+credentials.json
 
 # Claude Code local settings
 .claude/settings.local.json

@@ -26,16 +26,6 @@ On session start:
 
 Skills live in `.claude/skills/`. Add your own by dropping a markdown file there.
 
-### Skill Auto-Loading
-
-Agents can auto-load based on context (see Agent Auto-Routing below):
-
-| Agent | Trigger | File |
-|-------|---------|------|
-| CTO | Code, debug, API, infrastructure | `agents/cto.md` |
-| Content Strategist | Blog, social, email, copy | `agents/content-strategist.md` |
-| Growth Hacker | Outreach, funnel, experiments | `agents/growth-hacker.md` |
-
 ## Hooks
 
 Hooks fire automatically on events. Configured in `.claude/settings.json`:
@@ -81,6 +71,8 @@ When an agent is called:
 
 ### Agent Auto-Routing (Optional)
 
+Agents can auto-load based on context — no need to call them explicitly:
+
 | Trigger | Action |
 |---------|--------|
 | Code, debug, API, errors, infrastructure | Read `agents/cto.md` first |
@@ -107,7 +99,7 @@ Keep responses focused:
 ## Project Structure
 
 ```
-workspace/
+cortex/
 ├── CLAUDE.md                    # Master instructions
 ├── PATTERNS.md                  # Recipes and proven patterns
 ├── brain/
@@ -126,7 +118,8 @@ workspace/
 │   ├── closing-report.md        # What /close generates
 │   └── war-council-output.md    # War council in action
 ├── scripts/
-│   └── morning-brief.sh         # Automated daily brief (cron/launchd)
+│   ├── morning-brief.sh         # Automated daily brief (cron/launchd)
+│   └── com.cortex.morning-brief.plist  # macOS launchd config
 ├── notes/
 │   └── daily-summaries/         # Session reports from /close
 ├── docs/                        # Final documents

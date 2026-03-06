@@ -19,11 +19,11 @@
     <key>ProgramArguments</key>
     <array>
         <string>/bin/bash</string>
-        <string>/Users/YOUR_USERNAME/workspace/scripts/morning-brief.sh</string>
+        <string>/Users/YOUR_USERNAME/cortex/scripts/morning-brief.sh</string>
     </array>
 
     <key>WorkingDirectory</key>
-    <string>/Users/YOUR_USERNAME/workspace</string>
+    <string>/Users/YOUR_USERNAME/cortex</string>
 
     <key>StartCalendarInterval</key>
     <dict>

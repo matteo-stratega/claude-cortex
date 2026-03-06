@@ -17,7 +17,7 @@
 #
 # ============================================
 
-set -e
+set -eo pipefail
 
 # Change to workspace root (script may be called from cron)
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
@@ -32,6 +32,12 @@ fi
 
 if [ ! -f "brain/context.md" ]; then
     echo "Error: brain/context.md not found. Run /setup first to initialize your workspace."
+    exit 1
+fi
+
+if [ -z "$ANTHROPIC_API_KEY" ]; then
+    echo "Error: ANTHROPIC_API_KEY not set. Non-interactive mode requires an API key."
+    echo "Get one at https://console.anthropic.com"
     exit 1
 fi
 
@@ -69,8 +75,8 @@ if [ -f "$BRIEF_FILE" ]; then
     echo "---" >> "$BRIEF_FILE"
     echo "" >> "$BRIEF_FILE"
     echo "$BRIEF" >> "$BRIEF_FILE"
-    echo "Appended to $BRIEF_FILE"
+    echo "Appended to $BRIEF_FILE" >&2
 else
     echo "$BRIEF" > "$BRIEF_FILE"
-    echo "Saved to $BRIEF_FILE"
+    echo "Saved to $BRIEF_FILE" >&2
 fi
