@@ -46,6 +46,19 @@ fi
 NODE_VERSION=$(node --version)
 echo -e "${GREEN}  ✓ Node.js $NODE_VERSION${NC}"
 
+if ! command -v python3 &> /dev/null; then
+    echo -e "${RED}Python 3 not found!${NC}"
+    echo ""
+    echo "Python 3 is required for enforcement hooks (file-guard, agent-call-enforcer, context-auto-save)."
+    echo "  → https://python.org (download latest)"
+    echo ""
+    echo "Then run this script again."
+    exit 1
+fi
+
+PYTHON_VERSION=$(python3 --version)
+echo -e "${GREEN}  ✓ $PYTHON_VERSION${NC}"
+
 # ============================================
 # STEP 2: Install Claude Code
 # ============================================
@@ -1258,23 +1271,38 @@ echo -e "${GREEN}  ✓ examples/ (3 examples)${NC}"
 cat > scripts/morning-brief.sh << 'SCRIPTEOF'
 #!/bin/bash
 
-# Morning Brief — Automated Daily Status
-# Usage: ./scripts/morning-brief.sh
-# Cron:  30 8 * * * cd /path/to/cortex && ./scripts/morning-brief.sh
+# ============================================
+#  MORNING BRIEF — Automated Daily Status
+# ============================================
+#
+#  Runs Claude Code non-interactively to generate
+#  a morning brief from your brain context.
+#
+#  Usage:
+#    ./scripts/morning-brief.sh
+#
+#  Cron (every day at 8:30 AM):
+#    30 8 * * * cd /path/to/cortex && ./scripts/morning-brief.sh
+#
+#  macOS launchd: see scripts/com.cortex.morning-brief.plist
+#
+# ============================================
 
 set -eo pipefail
 
+# Change to workspace root (script may be called from cron)
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 WORKSPACE_DIR="$(dirname "$SCRIPT_DIR")"
 cd "$WORKSPACE_DIR"
 
+# Check prerequisites
 if ! command -v claude &> /dev/null; then
     echo "Error: Claude Code not found. Install with: npm install -g @anthropic-ai/claude-code"
     exit 1
 fi
 
 if [ ! -f "brain/context.md" ]; then
-    echo "Error: brain/context.md not found. Run /setup first."
+    echo "Error: brain/context.md not found. Run /setup first to initialize your workspace."
     exit 1
 fi
 
@@ -1284,9 +1312,7 @@ if [ -z "$ANTHROPIC_API_KEY" ]; then
     exit 1
 fi
 
-TODAY=$(date '+%Y%m%d')
-BRIEF_FILE="notes/daily-summaries/brief-${TODAY}.md"
-
+# Generate brief
 BRIEF=$(claude -p "Read brain/context.md and the latest file in notes/daily-summaries/ (if any exist). Then generate a morning brief in this format:
 
 ## Brief — $(date '+%A, %d %B %Y')
@@ -1310,8 +1336,11 @@ Keep it under 20 lines. No fluff." 2>&1) || {
     exit 1
 }
 
+# Output to terminal
 echo "$BRIEF"
 
+# Save to file (append if already exists today)
+BRIEF_FILE="notes/daily-summaries/brief-$(date '+%Y%m%d').md"
 if [ -f "$BRIEF_FILE" ]; then
     echo "" >> "$BRIEF_FILE"
     echo "---" >> "$BRIEF_FILE"

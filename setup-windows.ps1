@@ -35,6 +35,26 @@ if (-not $nodeCheck) {
 $nodeVersion = node --version
 Write-Host "  + Node.js $nodeVersion" -ForegroundColor Green
 
+$pythonCheck = Get-Command python3 -ErrorAction SilentlyContinue
+if (-not $pythonCheck) {
+    $pythonCheck = Get-Command python -ErrorAction SilentlyContinue
+}
+if (-not $pythonCheck) {
+    Write-Host "Python 3 not found!" -ForegroundColor Red
+    Write-Host ""
+    Write-Host "Python 3 is required for enforcement hooks (file-guard, agent-call-enforcer, context-auto-save)."
+    Write-Host "  -> https://python.org (download latest)"
+    Write-Host ""
+    Write-Host "Then run this script again."
+    Write-Host ""
+    Write-Host "Press any key to close..."
+    $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+    exit 1
+}
+
+$pythonVersion = & $pythonCheck.Source --version
+Write-Host "  + $pythonVersion" -ForegroundColor Green
+
 # ============================================
 # STEP 2: Install Claude Code
 # ============================================
@@ -872,7 +892,7 @@ $settingsJson = @'
         "hooks": [
           {
             "type": "command",
-            "command": "python3 .claude/hooks/file-guard.py"
+            "command": "python .claude/hooks/file-guard.py"
           }
         ]
       }
@@ -882,7 +902,7 @@ $settingsJson = @'
         "hooks": [
           {
             "type": "command",
-            "command": "python3 .claude/hooks/agent-call-enforcer.py"
+            "command": "python .claude/hooks/agent-call-enforcer.py"
           }
         ]
       }
@@ -892,7 +912,7 @@ $settingsJson = @'
         "hooks": [
           {
             "type": "command",
-            "command": "python3 .claude/hooks/context-auto-save.py"
+            "command": "python .claude/hooks/context-auto-save.py"
           }
         ]
       }
@@ -1268,23 +1288,38 @@ Write-Host "  + examples/ (3 examples)" -ForegroundColor Green
 $morningBrief = @'
 #!/bin/bash
 
-# Morning Brief — Automated Daily Status
-# Usage: ./scripts/morning-brief.sh
-# Cron:  30 8 * * * cd /path/to/cortex && ./scripts/morning-brief.sh
+# ============================================
+#  MORNING BRIEF — Automated Daily Status
+# ============================================
+#
+#  Runs Claude Code non-interactively to generate
+#  a morning brief from your brain context.
+#
+#  Usage:
+#    ./scripts/morning-brief.sh
+#
+#  Cron (every day at 8:30 AM):
+#    30 8 * * * cd /path/to/cortex && ./scripts/morning-brief.sh
+#
+#  macOS launchd: see scripts/com.cortex.morning-brief.plist
+#
+# ============================================
 
 set -eo pipefail
 
+# Change to workspace root (script may be called from cron)
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 WORKSPACE_DIR="$(dirname "$SCRIPT_DIR")"
 cd "$WORKSPACE_DIR"
 
+# Check prerequisites
 if ! command -v claude &> /dev/null; then
     echo "Error: Claude Code not found. Install with: npm install -g @anthropic-ai/claude-code"
     exit 1
 fi
 
 if [ ! -f "brain/context.md" ]; then
-    echo "Error: brain/context.md not found. Run /setup first."
+    echo "Error: brain/context.md not found. Run /setup first to initialize your workspace."
     exit 1
 fi
 
@@ -1294,9 +1329,7 @@ if [ -z "$ANTHROPIC_API_KEY" ]; then
     exit 1
 fi
 
-TODAY=$(date '+%Y%m%d')
-BRIEF_FILE="notes/daily-summaries/brief-${TODAY}.md"
-
+# Generate brief
 BRIEF=$(claude -p "Read brain/context.md and the latest file in notes/daily-summaries/ (if any exist). Then generate a morning brief in this format:
 
 ## Brief — $(date '+%A, %d %B %Y')
@@ -1320,8 +1353,11 @@ Keep it under 20 lines. No fluff." 2>&1) || {
     exit 1
 }
 
+# Output to terminal
 echo "$BRIEF"
 
+# Save to file (append if already exists today)
+BRIEF_FILE="notes/daily-summaries/brief-$(date '+%Y%m%d').md"
 if [ -f "$BRIEF_FILE" ]; then
     echo "" >> "$BRIEF_FILE"
     echo "---" >> "$BRIEF_FILE"

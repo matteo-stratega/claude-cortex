@@ -47,7 +47,7 @@ irm https://raw.githubusercontent.com/matteo-stratega/claude-cortex/main/setup-w
 ```
 </details>
 
-**Prerequisites:** [Node.js](https://nodejs.org) (LTS) + [Claude Code](https://claude.ai) (Pro $20/mo or Max $100/mo)
+**Prerequisites:** [Node.js](https://nodejs.org) (LTS) + [Python 3](https://python.org) + [Claude Code](https://claude.ai) (Pro $20/mo or Max $100/mo)
 
 ## What's Inside
 
@@ -181,7 +181,7 @@ This isn't a demo. It's the architecture behind a real business:
 - Prospecting pipelines (research → verify → enrich → CRM)
 - Newsletter + content production system
 
-36 agents. 6 MCP integrations. 25 auto-loading skills. 4 enforcement hooks. ~$100/mo.
+36 agents. 6 MCP integrations. 25 auto-loading skills. 3 enforcement hooks. ~$100/mo.
 
 ## Customization
 
