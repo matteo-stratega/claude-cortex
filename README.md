@@ -19,6 +19,8 @@
 
 I use this exact architecture to run my solo consultancy — 9 projects, 160+ tasks shipped, 36 agents. The repo is the business. [Full story here.](https://stratega.co/blog/my-ai-brain-part-2-one-month-later)
 
+**Prerequisites:** [Node.js](https://nodejs.org) (LTS) + [Python 3](https://python.org) + [Claude Code](https://claude.ai) (Pro $20/mo or Max $100/mo)
+
 ## Quick Start
 
 ```bash
@@ -46,8 +48,6 @@ bash setup.sh
 irm https://raw.githubusercontent.com/matteo-stratega/claude-cortex/main/setup-windows.ps1 | iex
 ```
 </details>
-
-**Prerequisites:** [Node.js](https://nodejs.org) (LTS) + [Python 3](https://python.org) + [Claude Code](https://claude.ai) (Pro $20/mo or Max $100/mo)
 
 ## What's Inside
 

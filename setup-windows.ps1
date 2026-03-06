@@ -763,19 +763,19 @@ def main():
     basename = os.path.basename(file_path)
 
     blocked_extensions = {".pem", ".key"}
-    blocked_names = {".env", ".env.local", ".env.production", ".env.staging", "MASTER.env", "credentials.json"}
+    blocked_names = {".env", ".env.local", ".env.production", ".env.staging", "MASTER.env", "credentials.json", "secrets.json", "token.json", "service-account.json", "api_keys.json"}
 
     _, ext = os.path.splitext(basename)
     if ext in blocked_extensions or basename in blocked_names:
-        print(json.dumps({"continue": False, "message": f"BLOCKED: Cannot write to '{basename}' -- credential file."}))
+        print(json.dumps({"continue": False, "message": f"BLOCKED: Cannot write to '{basename}' — this looks like a credential file. Add it to .gitignore first if intentional."}))
         return
 
     if ".credentials" in file_path.replace("\\", "/").split("/"):
-        print(json.dumps({"continue": False, "message": "BLOCKED: Cannot write to .credentials/ directory."}))
+        print(json.dumps({"continue": False, "message": f"BLOCKED: Cannot write to .credentials/ directory. Credential files should not be managed by Claude."}))
         return
 
     if basename == "CLAUDE.md":
-        print(json.dumps({"continue": True, "message": "NOTE: Editing CLAUDE.md (master instructions). Make sure this is intentional."}))
+        print(json.dumps({"continue": True, "message": "NOTE: You're editing CLAUDE.md (master instructions). Make sure this is intentional — changes here affect all future sessions."}))
         return
 
     print(json.dumps({"continue": True}))

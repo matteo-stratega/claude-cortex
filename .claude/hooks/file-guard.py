@@ -38,7 +38,7 @@ def main():
 
     # Block: credential files (check by extension and known names)
     blocked_extensions = {".pem", ".key"}
-    blocked_names = {".env", ".env.local", ".env.production", ".env.staging", "MASTER.env", "credentials.json"}
+    blocked_names = {".env", ".env.local", ".env.production", ".env.staging", "MASTER.env", "credentials.json", "secrets.json", "token.json", "service-account.json", "api_keys.json"}
 
     _, ext = os.path.splitext(basename)
     if ext in blocked_extensions or basename in blocked_names:
