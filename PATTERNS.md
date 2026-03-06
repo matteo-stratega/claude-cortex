@@ -292,4 +292,4 @@ Add project-specific routing to `/start`.
 
 ---
 
-*These patterns come from running a real business with this system — 36 agents, 9 projects, 160+ tasks shipped. Take what works, ignore what doesn't.*
+*These patterns come from running a real business with this system — 36 agents, 9 projects, 160+ tasks shipped in the author's own instance. This template ships with 4 agents and 7 skills to get you started. Take what works, ignore what doesn't.*

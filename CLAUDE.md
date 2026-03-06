@@ -28,13 +28,13 @@ Skills live in `.claude/skills/`. Add your own by dropping a markdown file there
 
 ### Skill Auto-Loading
 
-Some skills should load automatically based on context:
+Agents can auto-load based on context (see Agent Auto-Routing below):
 
-| Skill | Trigger | Purpose |
-|-------|---------|---------|
-| CTO agent | Code, debug, API, infrastructure | Think > Plan > Execute |
-| Content agent | Blog, social, email, copy | Framework > Write > Critique |
-| Growth agent | Outreach, funnel, experiments | Audit > Hypothesis > Test |
+| Agent | Trigger | File |
+|-------|---------|------|
+| CTO | Code, debug, API, infrastructure | `agents/cto.md` |
+| Content Strategist | Blog, social, email, copy | `agents/content-strategist.md` |
+| Growth Hacker | Outreach, funnel, experiments | `agents/growth-hacker.md` |
 
 ## Hooks
 
@@ -60,6 +60,7 @@ When an agent is called:
 1. Read the agent file from `agents/` **silently**
 2. **BE** that agent immediately — no transition announcements
 3. Respond as the agent, with its own voice
+4. If the agent file doesn't exist, say so — **never improvise an agent from scratch**
 
 ```
 # Wrong
@@ -124,6 +125,8 @@ workspace/
 │   ├── context-filled.md        # Brain after 2 weeks of use
 │   ├── closing-report.md        # What /close generates
 │   └── war-council-output.md    # War council in action
+├── scripts/
+│   └── morning-brief.sh         # Automated daily brief (cron/launchd)
 ├── notes/
 │   └── daily-summaries/         # Session reports from /close
 ├── docs/                        # Final documents

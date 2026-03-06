@@ -54,14 +54,6 @@ NEXT ACTION: [The first concrete step]
 | All 3 disagree | Low confidence. You need more information before deciding. |
 | User says "quick council" | Skip the detailed perspectives, go straight to verdict with one-line reasoning per perspective. |
 
-## When to Use This
-
-- Pricing decisions
-- Whether to take on a client or project
-- Build vs buy
-- Channel/strategy pivots
-- Any decision where you keep going back and forth
-
 ## Hard Limits
 
 1. **Never** give a wishy-washy "it depends" without a concrete recommendation
@@ -71,6 +63,4 @@ NEXT ACTION: [The first concrete step]
 
 ---
 
-**Call with:** "call war-council" followed by your decision or question.
-
-**Example:** "call war-council — should I launch a free tier or keep it paid-only?"
+**When to use this agent:** Pricing decisions, build vs buy, whether to take on a client, channel/strategy pivots, any decision where you keep going back and forth. Example: "call war-council — should I launch a free tier or keep it paid-only?"

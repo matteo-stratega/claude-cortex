@@ -10,17 +10,18 @@ Thumbs.db
 # Node
 node_modules/
 
-# Credentials (mai committare!)
+# Credentials (never commit these)
 .credentials/
 *.pem
 *.key
 .env
 .env.local
+MASTER.env
 
 # Claude Code local settings
 .claude/settings.local.json
 
-# Large data files (opzionale - decommenta se usi)
+# Large data files (uncomment if needed)
 # data/*.csv
 # data/*.xlsx
 

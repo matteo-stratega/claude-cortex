@@ -62,7 +62,7 @@ EXAMPLE (delete this block after filling in your data):
 ## Who I Am
 - **Name:** Alex Chen
 - **Role:** Solo founder
-- **Company:** LaunchPad (developer tools SaaS)
+- **Company:** LaunchKit (developer tools SaaS)
 
 ## This Week
 - [ ] Fix onboarding email sequence (3 emails not sending)

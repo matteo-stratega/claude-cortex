@@ -38,7 +38,7 @@ After user confirms, say:
 
 Suggest they make their first commit:
 ```
-git add -A && git commit -m "Initial context setup"
+git add brain/ CLAUDE.md && git commit -m "Initial context setup"
 ```
 
 ## Rules

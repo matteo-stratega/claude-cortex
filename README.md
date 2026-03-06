@@ -28,7 +28,7 @@ claude
 /setup
 ```
 
-`/setup` walks you through filling in your context. Takes about 5 minutes.
+`/setup` is a Claude Code command — type it inside the Claude session. It walks you through filling in your context in about 5 minutes.
 
 <details>
 <summary><b>One-liner install (Mac/Linux)</b></summary>

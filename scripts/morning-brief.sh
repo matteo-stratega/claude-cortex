@@ -11,7 +11,7 @@
 #    ./scripts/morning-brief.sh
 #
 #  Cron (every day at 8:30 AM):
-#    30 8 * * * cd /path/to/workspace && ./scripts/morning-brief.sh
+#    30 8 * * * cd /path/to/cortex && ./scripts/morning-brief.sh
 #
 #  macOS launchd: see scripts/com.cortex.morning-brief.plist
 #
@@ -24,9 +24,14 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 WORKSPACE_DIR="$(dirname "$SCRIPT_DIR")"
 cd "$WORKSPACE_DIR"
 
-# Check claude is available
+# Check prerequisites
 if ! command -v claude &> /dev/null; then
     echo "Error: Claude Code not found. Install with: npm install -g @anthropic-ai/claude-code"
+    exit 1
+fi
+
+if [ ! -f "brain/context.md" ]; then
+    echo "Error: brain/context.md not found. Run /setup first to initialize your workspace."
     exit 1
 fi
 
@@ -48,13 +53,24 @@ BRIEF=$(claude -p "Read brain/context.md and the latest file in notes/daily-summ
 ### Blockers
 - [anything stuck or waiting, or 'None' if clear]
 
-Keep it under 20 lines. No fluff." 2>/dev/null)
+Keep it under 20 lines. No fluff." 2>&1) || {
+    echo "Error: Claude failed to generate brief"
+    echo "$BRIEF"
+    exit 1
+}
 
 # Output to terminal
 echo "$BRIEF"
 
-# Optionally save to file
+# Save to file (append if already exists today)
 BRIEF_FILE="notes/daily-summaries/brief-$(date '+%Y%m%d').md"
-echo "$BRIEF" > "$BRIEF_FILE"
-echo ""
-echo "Saved to $BRIEF_FILE"
+if [ -f "$BRIEF_FILE" ]; then
+    echo "" >> "$BRIEF_FILE"
+    echo "---" >> "$BRIEF_FILE"
+    echo "" >> "$BRIEF_FILE"
+    echo "$BRIEF" >> "$BRIEF_FILE"
+    echo "Appended to $BRIEF_FILE"
+else
+    echo "$BRIEF" > "$BRIEF_FILE"
+    echo "Saved to $BRIEF_FILE"
+fi
