@@ -1626,6 +1626,10 @@ id_ed25519
 .env.*
 MASTER.env
 credentials.json
+secrets.json
+token.json
+service-account.json
+api_keys.json
 
 # Claude Code local settings
 .claude/settings.local.json
