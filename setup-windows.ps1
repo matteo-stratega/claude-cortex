@@ -118,25 +118,15 @@ On session start:
 
 | Skill | What it does |
 |-------|-------------|
-| `/setup` | First-time guided onboarding (run once) |
 | `/start` | Reads context, checks last session, asks what you're working on |
 | `/close` | Writes session report, updates context, cleans up completed items |
 | `/brief` | Quick daily status overview (20 lines max) |
 | `/plan` | Breaks a task into phases with verification criteria |
 | `/review` | Code review checklist (security, simplicity, edge cases) |
-| `/weekly` | Weekly retrospective — what shipped, patterns, next week |
+| `/weekly` | Weekly retrospective — what shipped, patterns, next week priorities |
+| `/setup` | First-time guided setup (run once after cloning) |
 
 Skills live in `.claude/skills/`. Add your own by dropping a markdown file there.
-
-### Agent Auto-Loading
-
-Agents can auto-load based on context:
-
-| Agent | Trigger | File |
-|-------|---------|------|
-| CTO | Code, debug, API, infrastructure | `agents/cto.md` |
-| Content Strategist | Blog, social, email, copy | `agents/content-strategist.md` |
-| Growth Hacker | Outreach, funnel, experiments | `agents/growth-hacker.md` |
 
 ## Hooks
 
@@ -150,9 +140,13 @@ Hooks fire automatically on events. Configured in `.claude/settings.json`:
 
 ## Agents
 
-Agent definitions live in `agents/`. Say "call [agent-name]" to activate one.
+Agent definitions live in `agents/`. Each agent has its own personality, protocol, and decision rules.
 
-### Agent Existence Protocol
+### How to Call an Agent
+
+Say "call [agent-name]" — e.g., "call cto", "call war-council".
+
+### Agent Existence Protocol (Important)
 
 When an agent is called:
 1. Read the agent file from `agents/` **silently**
@@ -160,22 +154,32 @@ When an agent is called:
 3. Respond as the agent, with its own voice
 4. If the agent file doesn't exist, say so — **never improvise an agent from scratch**
 
+```
+# Wrong
+"I'm now switching to the CTO agent role..."
+
+# Right
+[The agent responds directly, in its own voice, without preamble]
+```
+
 ### Available Agents
 
 | Agent | Domain | File |
 |-------|--------|------|
-| CTO | Code, debug, architecture | `agents/cto.md` |
-| Content Strategist | Blog, social, email | `agents/content-strategist.md` |
-| Growth Hacker | Outreach, funnels, experiments | `agents/growth-hacker.md` |
-| War Council | Multi-perspective decisions | `agents/war-council.md` |
+| CTO | Code, debug, architecture, infrastructure | `agents/cto.md` |
+| Content Strategist | Blog, social, email, content planning | `agents/content-strategist.md` |
+| Growth Hacker | Outreach, funnels, experiments, channels | `agents/growth-hacker.md` |
+| War Council | Multi-perspective decision making | `agents/war-council.md` |
 
-### Agent Auto-Routing
+### Agent Auto-Routing (Optional)
+
+Agents can auto-load based on context — no need to call them explicitly:
 
 | Trigger | Action |
 |---------|--------|
-| Code, debug, API, errors | Read `agents/cto.md` first |
+| Code, debug, API, errors, infrastructure | Read `agents/cto.md` first |
 | Blog, social, email, content | Read `agents/content-strategist.md` first |
-| Outreach, funnel, pipeline | Read `agents/growth-hacker.md` first |
+| Outreach, funnel, pipeline, growth | Read `agents/growth-hacker.md` first |
 
 ## General Rules
 
@@ -184,8 +188,15 @@ When an agent is called:
 3. **Execute autonomously** — Only ask if critical info is missing
 4. **Be concise** — Short, actionable responses
 5. **Update context** — Keep brain files current after every session
-6. **Never load everything** — Only read what's needed
+6. **Never load everything** — Only read what's needed for the current task
 7. **Think before doing** — State the problem, list options, then act
+
+## Token Budget
+
+Keep responses focused:
+- **Startup** (`/start`): Under 700 tokens
+- **Per-task responses**: As short as the task allows
+- **Planning**: Invest tokens in thinking, not in verbose explanations
 
 ## Project Structure
 
@@ -194,14 +205,25 @@ cortex/
 ├── CLAUDE.md                    # Master instructions
 ├── PATTERNS.md                  # Recipes and proven patterns
 ├── brain/
-│   ├── context.md               # Index (loads every session)
-│   └── contexts/                # Area context (load on demand)
-├── agents/                      # 4 agents
-├── examples/                    # What it looks like in action
+│   ├── context.md               # Index (loads every session, ~60 lines)
+│   └── contexts/                # Area-specific context (load on demand)
+│       ├── work.md              # Clients, deals, revenue
+│       ├── projects.md          # Active builds
+│       └── content.md           # Blog, social, video
+├── agents/                      # 4 ready-to-use agents
+│   ├── cto.md                   # Technical decisions + debugging
+│   ├── content-strategist.md    # Content creation + frameworks
+│   ├── growth-hacker.md         # Growth experiments + outreach
+│   └── war-council.md           # Multi-perspective decisions
+├── examples/                    # What the system looks like in action
+│   ├── context-filled.md        # Brain after 2 weeks of use
+│   ├── closing-report.md        # What /close generates
+│   └── war-council-output.md    # War council in action
 ├── scripts/
 │   ├── morning-brief.sh         # Automated daily brief (cron/launchd)
 │   └── com.cortex.morning-brief.plist  # macOS launchd config
-├── notes/daily-summaries/       # Session reports
+├── notes/
+│   └── daily-summaries/         # Session reports from /close
 ├── docs/                        # Final documents
 └── .claude/
     ├── skills/                  # 7 skills
@@ -214,6 +236,7 @@ cortex/
 - Markdown formatting, bullet points
 - No emojis (unless requested)
 - Get to the point — lead with the answer, not the reasoning
+- Short sentences over long explanations
 '@
 $claudeMd | Out-File -FilePath "$ProjectPath\CLAUDE.md" -Encoding UTF8
 
@@ -533,31 +556,41 @@ $briefSkill = @'
 Generate a quick status overview:
 
 ## Step 1: Load Context
+
 1. Read `brain/context.md`
 2. Read the latest `notes/daily-summaries/closing-*.md`
 
 ## Step 2: Generate Brief
 
+Output this format:
+
+```
 ## Brief — [Today's Date]
 
 **Focus:** [Main area from context]
 
 ### Yesterday
-- [Key completions from last closing report, or "No prior sessions" if none exist]
+- [Key completions from last closing report]
 
 ### Today's Priorities
-1. [Most urgent from "This Week"]
+1. [From "This Week" in context — what's most urgent]
 2. [Second priority]
 3. [Third priority]
 
 ### Blockers
-- [Anything stuck or waiting, or "None"]
+- [Anything waiting on someone else or stuck]
+
+### Quick Numbers
+- [Any key metrics from context: MRR, pipeline, deadlines]
+```
 
 ## Rules
-- Max 20 lines total. Glance, not a report.
-- If no closing report exists, skip "Yesterday"
-- Don't load area context files — brief uses index only
-- If no numerical data in context, omit numbers rather than guessing
+
+- Max 20 lines total. This is a glance, not a report.
+- Priorities come from context.md "This Week" section
+- If no closing report exists, skip "Yesterday" section
+- Don't load area context files — the brief uses the index only
+- If no numerical data in context, omit "Quick Numbers" rather than guessing
 '@
 $briefSkill | Out-File -FilePath "$ProjectPath\.claude\skills\brief.md" -Encoding UTF8
 
@@ -1264,7 +1297,24 @@ fi
 TODAY=$(date '+%Y%m%d')
 BRIEF_FILE="notes/daily-summaries/brief-${TODAY}.md"
 
-BRIEF=$(claude -p "Read brain/context.md and the latest file in notes/daily-summaries/ (if any exist). Generate a morning brief: Focus, Yesterday (or 'First brief'), Today's top 3 priorities, Blockers. Max 20 lines." 2>&1) || {
+BRIEF=$(claude -p "Read brain/context.md and the latest file in notes/daily-summaries/ (if any exist). Then generate a morning brief in this format:
+
+## Brief — $(date '+%A, %d %B %Y')
+
+**Focus:** [main area from context]
+
+### Yesterday
+- [key completions from latest closing report, or 'First brief — no prior sessions' if none exist]
+
+### Today's Priorities
+1. [most urgent from This Week]
+2. [second priority]
+3. [third priority]
+
+### Blockers
+- [anything stuck or waiting, or 'None' if clear]
+
+Keep it under 20 lines. No fluff." 2>&1) || {
     echo "Error: Claude failed to generate brief"
     echo "$BRIEF"
     exit 1
