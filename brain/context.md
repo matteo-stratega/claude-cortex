@@ -55,26 +55,4 @@ Detailed context lives in `brain/contexts/` — load only what's relevant.
 ---
 
 *Add your areas to the table above. Create matching files in `contexts/`.*
-
-<!--
-EXAMPLE (delete this block after filling in your data):
-
-## Who I Am
-- **Name:** Alex Chen
-- **Role:** Solo founder
-- **Company:** LaunchKit (developer tools SaaS)
-
-## This Week
-- [ ] Fix onboarding email sequence (3 emails not sending)
-- [ ] Ship v2 pricing page (A/B test ready)
-- [x] Set up analytics dashboard
-
-## Quick Reference
-| Key | Value |
-|-----|-------|
-| Main tool | Claude Code |
-| Subscription | Claude Max |
-| Stack | Next.js, Supabase, Vercel, Resend |
-| CRM | HubSpot (free tier) |
-| Domain | launchpad.dev |
--->
+*See `examples/context-filled.md` for what this looks like after 2 weeks of use.*

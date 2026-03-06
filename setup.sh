@@ -216,7 +216,7 @@ Agents can auto-load based on context — no need to call them explicitly:
 ## Token Budget
 
 Keep responses focused:
-- **Startup** (`/start`): Under 700 tokens
+- **Startup** (`/start`): Keep it short — load context, summarize, ask what we're doing
 - **Per-task responses**: As short as the task allows
 - **Planning**: Invest tokens in thinking, not in verbose explanations
 
