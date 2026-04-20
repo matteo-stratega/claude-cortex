@@ -8,7 +8,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 .claude/hooks/file-guard.py"
+            "command": "python3 hooks/file-guard.py"
           }
         ]
       }
@@ -18,7 +18,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 .claude/hooks/agent-call-enforcer.py"
+            "command": "python3 hooks/agent-call-enforcer.py"
           }
         ]
       }
@@ -28,7 +28,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 .claude/hooks/context-auto-save.py"
+            "command": "python3 hooks/context-auto-save.py"
           }
         ]
       }

@@ -111,8 +111,8 @@ mkdir -p docs
 mkdir -p agents
 mkdir -p examples
 mkdir -p scripts
-mkdir -p .claude/skills
-mkdir -p .claude/hooks
+mkdir -p skills
+mkdir -p hooks
 
 # Placeholder files
 touch notes/daily-summaries/.gitkeep
@@ -148,7 +148,7 @@ On session start:
 | `/weekly` | Weekly retrospective — what shipped, patterns, next week priorities |
 | `/setup` | First-time guided setup (run once after cloning) |
 
-Skills live in `.claude/skills/`. Add your own by dropping a markdown file there.
+Skills live in `skills/`. Add your own by dropping a markdown file there.
 
 ## Hooks
 
@@ -421,7 +421,7 @@ echo -e "${GREEN}  ✓ brain/contexts/ (3 modules)${NC}"
 # ============================================
 # Skills (7 skills)
 # ============================================
-cat > .claude/skills/setup.md << 'EOF'
+cat > skills/setup.md << 'EOF'
 # First-Time Setup
 
 Guide the user through setting up their workspace. Run this once after cloning.
@@ -469,7 +469,7 @@ git add brain/ CLAUDE.md && git commit -m "Initial context setup"
 - Keep context.md under 60 lines
 EOF
 
-cat > .claude/skills/start.md << 'EOF'
+cat > skills/start.md << 'EOF'
 # Session Start
 
 Execute the session start protocol:
@@ -505,7 +505,7 @@ Based on the user's answer, load ONLY the matching context file from `brain/cont
 Proceed with the task. You now have the right context loaded.
 EOF
 
-cat > .claude/skills/close.md << 'EOF'
+cat > skills/close.md << 'EOF'
 # Session Close
 
 Execute the session close protocol:
@@ -564,7 +564,7 @@ Tell user: "Session closed. Report saved in [path]."
 Don't ask for confirmation — just write the report and update context.
 EOF
 
-cat > .claude/skills/brief.md << 'EOF'
+cat > skills/brief.md << 'EOF'
 # Daily Brief
 
 Generate a quick status overview:
@@ -607,7 +607,7 @@ Output this format:
 - If no numerical data in context, omit "Quick Numbers" rather than guessing
 EOF
 
-cat > .claude/skills/plan.md << 'EOF'
+cat > skills/plan.md << 'EOF'
 # Plan
 
 Create a structured plan for a task:
@@ -637,7 +637,7 @@ Ask: **"Does this look right? Should I start with Phase 1?"**
 - Don't execute until user approves
 EOF
 
-cat > .claude/skills/review.md << 'EOF'
+cat > skills/review.md << 'EOF'
 # Code Review
 
 ## Step 1: Identify Changes
@@ -669,7 +669,7 @@ For non-code files (markdown, JSON, shell scripts): focus on Naming and Simplici
 - If everything looks good, say so
 EOF
 
-cat > .claude/skills/weekly.md << 'EOF'
+cat > skills/weekly.md << 'EOF'
 # Weekly Review
 
 Generate a weekly retrospective from your closing reports.
@@ -715,12 +715,12 @@ Ask: "Should I update brain/context.md with next week's priorities?"
 - Max 30 lines total
 EOF
 
-echo -e "${GREEN}  ✓ .claude/skills/ (7 skills)${NC}"
+echo -e "${GREEN}  ✓ skills/ (7 skills)${NC}"
 
 # ============================================
 # Hooks (3 hooks)
 # ============================================
-cat > .claude/hooks/file-guard.py << 'HOOKEOF0'
+cat > hooks/file-guard.py << 'HOOKEOF0'
 #!/usr/bin/env python3
 """
 Hook: File Guard
@@ -774,7 +774,7 @@ if __name__ == "__main__":
     main()
 HOOKEOF0
 
-cat > .claude/hooks/agent-call-enforcer.py << 'HOOKEOF1'
+cat > hooks/agent-call-enforcer.py << 'HOOKEOF1'
 #!/usr/bin/env python3
 """
 Hook: Agent Call Enforcer
@@ -819,7 +819,7 @@ if __name__ == "__main__":
     main()
 HOOKEOF1
 
-cat > .claude/hooks/context-auto-save.py << 'HOOKEOF2'
+cat > hooks/context-auto-save.py << 'HOOKEOF2'
 #!/usr/bin/env python3
 """
 Hook: Context Auto-Save Reminder
@@ -863,11 +863,11 @@ if __name__ == "__main__":
     main()
 HOOKEOF2
 
-chmod +x .claude/hooks/file-guard.py
-chmod +x .claude/hooks/agent-call-enforcer.py
-chmod +x .claude/hooks/context-auto-save.py
+chmod +x hooks/file-guard.py
+chmod +x hooks/agent-call-enforcer.py
+chmod +x hooks/context-auto-save.py
 
-echo -e "${GREEN}  ✓ .claude/hooks/ (3 hooks)${NC}"
+echo -e "${GREEN}  ✓ hooks/ (3 hooks)${NC}"
 
 # ============================================
 # settings.json (3 hooks wired)
@@ -883,7 +883,7 @@ cat > .claude/settings.json << 'EOF'
         "hooks": [
           {
             "type": "command",
-            "command": "python3 .claude/hooks/file-guard.py"
+            "command": "python3 hooks/file-guard.py"
           }
         ]
       }
@@ -893,7 +893,7 @@ cat > .claude/settings.json << 'EOF'
         "hooks": [
           {
             "type": "command",
-            "command": "python3 .claude/hooks/agent-call-enforcer.py"
+            "command": "python3 hooks/agent-call-enforcer.py"
           }
         ]
       }
@@ -903,7 +903,7 @@ cat > .claude/settings.json << 'EOF'
         "hooks": [
           {
             "type": "command",
-            "command": "python3 .claude/hooks/context-auto-save.py"
+            "command": "python3 hooks/context-auto-save.py"
           }
         ]
       }
