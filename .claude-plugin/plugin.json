@@ -1,0 +1,21 @@
+{
+  "name": "cortex",
+  "description": "An operating system for Claude Code. Persistent memory, specialized agents, auto-loading skills, and enforcement hooks for solo builders and developers.",
+  "author": {
+    "name": "Matteo Lombardi",
+    "email": "matteo@stratega.co",
+    "url": "https://stratega.co"
+  },
+  "homepage": "https://github.com/matteo-stratega/claude-cortex",
+  "repository": "https://github.com/matteo-stratega/claude-cortex",
+  "license": "MIT",
+  "keywords": [
+    "claude-code",
+    "ai-agents",
+    "persistent-memory",
+    "workflow",
+    "hooks",
+    "skills",
+    "productivity"
+  ]
+}

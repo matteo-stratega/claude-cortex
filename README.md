@@ -21,7 +21,23 @@ I use this exact architecture to run my solo consultancy — 9 projects, 160+ ta
 
 **Prerequisites:** [Node.js](https://nodejs.org) (LTS) + [Python 3](https://python.org) + [Claude Code](https://claude.ai) (Pro $20/mo or Max $100/mo)
 
-## Quick Start
+## Install
+
+Two ways to use Cortex, depending on what you want.
+
+### As a Claude Code plugin (capabilities only)
+
+Drop the agents, skills, and hooks into any project:
+
+```bash
+/plugin install matteo-stratega/claude-cortex
+```
+
+You get the 4 agents, 7 skills, and 3 hooks. Your existing project stays as-is. No workspace scaffolding, no brain system — just the capabilities.
+
+### As a full workspace template (recommended for solo builders)
+
+Clone the repo and fill in your own context. This is the full setup — brain, context files, session loop, morning brief.
 
 ```bash
 git clone https://github.com/matteo-stratega/claude-cortex.git cortex
@@ -30,7 +46,7 @@ claude
 /setup
 ```
 
-`/setup` is a Claude Code command — type it inside the Claude session. It walks you through filling in your context in about 5 minutes.
+`/setup` walks you through filling in your context in about 5 minutes.
 
 <details>
 <summary><b>One-liner install (Mac/Linux)</b></summary>
@@ -118,7 +134,7 @@ Each agent has hard limits and decision rules. They don't just answer differentl
 | `/review` | Code review checklist — security, simplicity, edge cases |
 | `/weekly` | Weekly retrospective — what shipped, time patterns, next week priorities |
 
-Add your own: drop a markdown file in `.claude/skills/`.
+Add your own: drop a markdown file in `skills/`.
 
 ### Hooks — Invisible Enforcement
 
@@ -211,7 +227,7 @@ This isn't a demo. It's the architecture behind a real business:
 <details>
 <summary><b>Add a skill</b></summary>
 
-1. Create `.claude/skills/your-skill.md`
+1. Create `skills/your-skill.md`
 2. Structure: Step 1 → Step 2 → Step 3 → Output format → Rules
 3. Call it with `/your-skill` in any session
 
@@ -221,7 +237,7 @@ Skills work best with: clear steps, a specific output format, and rules for edge
 <details>
 <summary><b>Add a hook</b></summary>
 
-1. Write a Python script in `.claude/hooks/`
+1. Write a Python script in `hooks/`
 2. Read stdin (JSON), write stdout (JSON with `continue: true/false` and optional `message`)
 3. Add it to `.claude/settings.json` under the right trigger
 4. Available triggers: `PreToolUse`, `PostToolUse`, `UserPromptSubmit`, `Stop`

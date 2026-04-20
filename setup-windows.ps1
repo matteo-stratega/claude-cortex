@@ -146,7 +146,7 @@ On session start:
 | `/weekly` | Weekly retrospective — what shipped, patterns, next week priorities |
 | `/setup` | First-time guided setup (run once after cloning) |
 
-Skills live in `.claude/skills/`. Add your own by dropping a markdown file there.
+Skills live in `skills/`. Add your own by dropping a markdown file there.
 
 ## Hooks
 
@@ -725,7 +725,7 @@ Ask: "Should I update brain/context.md with next week's priorities?"
 '@
 $weeklySkill | Out-File -FilePath "$ProjectPath\.claude\skills\weekly.md" -Encoding UTF8
 
-Write-Host "  + .claude/skills/ (7 skills)" -ForegroundColor Green
+Write-Host "  + skills/ (7 skills)" -ForegroundColor Green
 
 # ============================================
 # Hooks (3 hooks)
@@ -876,7 +876,7 @@ if __name__ == "__main__":
 '@
 $contextAutoSaveHook | Out-File -FilePath "$ProjectPath\.claude\hooks\context-auto-save.py" -Encoding UTF8
 
-Write-Host "  + .claude/hooks/ (3 hooks)" -ForegroundColor Green
+Write-Host "  + hooks/ (3 hooks)" -ForegroundColor Green
 
 # ============================================
 # settings.json (3 hooks wired)
@@ -892,7 +892,7 @@ $settingsJson = @'
         "hooks": [
           {
             "type": "command",
-            "command": "python .claude/hooks/file-guard.py"
+            "command": "python hooks/file-guard.py"
           }
         ]
       }
@@ -902,7 +902,7 @@ $settingsJson = @'
         "hooks": [
           {
             "type": "command",
-            "command": "python .claude/hooks/agent-call-enforcer.py"
+            "command": "python hooks/agent-call-enforcer.py"
           }
         ]
       }
@@ -912,7 +912,7 @@ $settingsJson = @'
         "hooks": [
           {
             "type": "command",
-            "command": "python .claude/hooks/context-auto-save.py"
+            "command": "python hooks/context-auto-save.py"
           }
         ]
       }
