@@ -38,12 +38,13 @@ def main():
                 break
 
     if should_remind:
+        # systemMessage surfaces the reminder; "message" is not a real field,
+        # and we don't want to block the Stop event.
         result = {
-            "continue": True,
-            "message": "REMINDER: Update brain/context.md — remove completed items, add new priorities, update statuses."
+            "systemMessage": "Closing: update brain/context.md (remove completed, add priorities) and save durable learnings to memory."
         }
     else:
-        result = {"continue": True}
+        result = {}
 
     print(json.dumps(result))
 

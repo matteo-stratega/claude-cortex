@@ -28,11 +28,11 @@ expect_absent()   { case "$(run "$2" "$3")" in *"$4"*) bad "$1";; *) ok "$1";; e
 echo "Hooks:"
 if [ -z "$PY" ]; then echo "  (no python found — skipping hook tests)"; else
 
-# file-guard: block credential writes, allow normal, warn on CLAUDE.md
-expect_contains "file-guard blocks .env"        file-guard.py \
-  '{"tool_name":"Write","tool_input":{"file_path":"/p/.env"}}' '"continue": false'
-expect_contains "file-guard allows source file" file-guard.py \
-  '{"tool_name":"Write","tool_input":{"file_path":"/p/src/app.js"}}' '"continue": true'
+# file-guard: deny credential writes (PreToolUse permissionDecision), allow normal
+expect_contains "file-guard denies .env"        file-guard.py \
+  '{"tool_name":"Write","tool_input":{"file_path":"/p/.env"}}' '"permissionDecision": "deny"'
+expect_absent   "file-guard allows source file" file-guard.py \
+  '{"tool_name":"Write","tool_input":{"file_path":"/p/src/app.js"}}' 'deny'
 
 # simplest-approach: deny browser automation, allow normal
 expect_contains "simplest denies browser-automation" simplest-approach-enforcer.py \
@@ -48,7 +48,7 @@ expect_absent   "agent-call ignores old 'message' field" agent-call-enforcer.py 
 
 # context-auto-save: remind on /close
 expect_contains "context-auto-save reminds on /close" context-auto-save.py \
-  '{"message":"running /close now"}' 'REMINDER'
+  '{"message":"running /close now"}' 'systemMessage'
 
 # lazy-question-blocker: block lazy question
 expect_contains "lazy-question blocks lazy ask" lazy-question-blocker.py \

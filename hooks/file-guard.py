@@ -41,33 +41,38 @@ def main():
     blocked_names = {".env", ".env.local", ".env.production", ".env.staging", "MASTER.env", "credentials.json", "secrets.json", "token.json", "service-account.json", "api_keys.json"}
 
     _, ext = os.path.splitext(basename)
+
+    def deny(reason):
+        # PreToolUse denial: hookSpecificOutput.permissionDecision="deny".
+        # NOTE: top-level {"continue": false} does NOT deny a tool — it stops
+        # the whole agent — and there is no "message" field. Use this schema.
+        print(json.dumps({
+            "hookSpecificOutput": {
+                "hookEventName": "PreToolUse",
+                "permissionDecision": "deny",
+                "permissionDecisionReason": reason,
+            }
+        }))
+
     if ext in blocked_extensions or basename in blocked_names:
-        result = {
-            "continue": False,
-            "message": f"BLOCKED: Cannot write to '{basename}' — this looks like a credential file. Add it to .gitignore first if intentional."
-        }
-        print(json.dumps(result))
+        deny(f"'{basename}' looks like a credential file. Cortex never writes these. "
+             f"If this is intentional, write it yourself and add it to .gitignore.")
         return
 
     # Block: .credentials/ directory (normalize slashes for cross-platform)
     if ".credentials" in file_path.replace("\\", "/").split("/"):
-        result = {
-            "continue": False,
-            "message": f"BLOCKED: Cannot write to .credentials/ directory. Credential files should not be managed by Claude."
-        }
-        print(json.dumps(result))
+        deny("Writes to .credentials/ are blocked — credential files should not be managed by Claude.")
         return
 
-    # Warn: CLAUDE.md edits (often accidental)
+    # Warn (but allow): CLAUDE.md edits (often accidental). systemMessage shows
+    # the note to the user; "message" is not a real field.
     if basename == "CLAUDE.md":
-        result = {
-            "continue": True,
-            "message": "NOTE: You're editing CLAUDE.md (master instructions). Make sure this is intentional — changes here affect all future sessions."
-        }
-        print(json.dumps(result))
+        print(json.dumps({
+            "systemMessage": "Editing CLAUDE.md (master instructions) — changes here affect all future sessions."
+        }))
         return
 
-    print(json.dumps({"continue": True}))
+    print(json.dumps({}))
 
 if __name__ == "__main__":
     main()

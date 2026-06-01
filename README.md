@@ -182,6 +182,8 @@ Hooks fire on events. You don't invoke them. They just run.
 | `lazy-question-blocker.py` | Stop | Pushes Claude to find answers itself before asking you |
 | `verification-gate.py` | Stop | **Blocks** "it's done" claims with no verification evidence |
 
+> Hooks only fire once you **accept the folder-trust prompt** on first launch — that's a Claude Code gate, not a Cortex setting. If enforcement seems silent, run `/memory` to confirm the workspace is trusted.
+
 ### Morning Brief — Automated Daily Status
 
 Run your brief on autopilot. The script calls Claude non-interactively, reads your context, and generates a 20-line status report.
