@@ -41,15 +41,32 @@ if [ -z "$ANTHROPIC_API_KEY" ]; then
     exit 1
 fi
 
-# Generate brief
-BRIEF=$(claude -p "Read brain/context.md and the latest file in notes/daily-summaries/ (if any exist). Then generate a morning brief in this format:
+# Inject the context DETERMINISTICALLY (cat it into the prompt) instead of
+# asking the model to read it. In non-interactive mode "please read X" is
+# unreliable — the model may skip the read and emit a hollow brief. Feeding the
+# content guarantees it's there.
+CONTEXT=$(cat brain/context.md)
+LATEST_CLOSING=$(ls -t notes/daily-summaries/closing-*.md notes/daily-summaries/*/closing-*.md 2>/dev/null | head -1)
+CLOSING_CONTENT="(no prior sessions yet)"
+[ -n "$LATEST_CLOSING" ] && CLOSING_CONTENT=$(cat "$LATEST_CLOSING")
+
+BRIEF=$(claude -p "Generate a morning brief from the context below. Do NOT call any tools — everything you need is here. Output ONLY the brief, starting at the '## Brief' line, no preamble.
+
+=== brain/context.md ===
+$CONTEXT
+
+=== latest closing report ===
+$CLOSING_CONTENT
+=== end ===
+
+Format:
 
 ## Brief — $(date '+%A, %d %B %Y')
 
 **Focus:** [main area from context]
 
 ### Yesterday
-- [key completions from latest closing report, or 'First brief — no prior sessions' if none exist]
+- [key completions from the closing report above, or 'First brief — no prior sessions']
 
 ### Today's Priorities
 1. [most urgent from This Week]
@@ -64,6 +81,19 @@ Keep it under 20 lines. No fluff." 2>&1) || {
     echo "$BRIEF"
     exit 1
 }
+
+# Strip any preamble before the brief header (defense in depth).
+case "$BRIEF" in
+    *"## Brief"*) BRIEF=$(printf '%s\n' "$BRIEF" | sed -n '/## Brief/,$p') ;;
+esac
+
+# Hollow-output tripwire: a real brief has several non-blank lines.
+NONBLANK=$(printf '%s\n' "$BRIEF" | grep -c .)
+if [ "$NONBLANK" -lt 4 ]; then
+    echo "Error: brief looks hollow (${NONBLANK} non-blank lines) — context may not have loaded. Not saving." >&2
+    echo "$BRIEF" >&2
+    exit 1
+fi
 
 # Output to terminal
 echo "$BRIEF"
