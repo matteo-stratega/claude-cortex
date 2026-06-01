@@ -294,6 +294,16 @@ workspace/
 
 Add project-specific routing to `/start`.
 
+### A Queryable Memory Graph (advanced)
+
+Native auto memory (markdown files, recalled automatically — see the `memory`
+skill) covers most needs with zero dependencies. If you want a *queryable* graph
+— entities and relations you can search, not just recall — layer a knowledge-graph
+memory MCP on top, and optionally auto-extract entities from your closing reports
+with an extraction step. This adds real dependencies (an MCP server, plus an LLM
+for extraction), so reach for it only when flat memory files genuinely aren't
+enough. Most workspaces never do.
+
 ---
 
-*These patterns come from running a real business with this system — 36 agents, 9 projects, 160+ tasks shipped in the author's own instance. This template ships with 4 agents and 7 skills to get you started. Take what works, ignore what doesn't.*
+*These patterns come from running a real business with this system — 36 agents, 9 projects, 160+ tasks shipped in the author's own instance. This template ships with 5 agents and 10 skills to get you started. Take what works, ignore what doesn't.*
