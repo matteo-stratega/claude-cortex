@@ -1,7 +1,6 @@
 ---
 name: daily-wrap
 description: End-of-day consolidation. Merges the day's sessions into one closing report, updates context, and preps tomorrow. Use at the end of a working day, or when the user says "wrap up the day" or "daily wrap".
-disable-model-invocation: true
 ---
 
 # Daily Wrap
