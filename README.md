@@ -4,6 +4,7 @@
 </p>
 
 <p align="center">
+  <a href="https://github.com/matteo-stratega/claude-cortex/actions/workflows/ci.yml"><img src="https://github.com/matteo-stratega/claude-cortex/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <a href="https://github.com/matteo-stratega/claude-cortex/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-825af5" alt="License"></a>
   <a href="https://github.com/matteo-stratega/claude-cortex/stargazers"><img src="https://img.shields.io/github/stars/matteo-stratega/claude-cortex?color=825af5" alt="Stars"></a>
   <a href="https://github.com/matteo-stratega/claude-cortex/commits/main"><img src="https://img.shields.io/github/last-commit/matteo-stratega/claude-cortex?color=825af5" alt="Last Commit"></a>

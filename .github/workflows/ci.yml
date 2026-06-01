@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+jobs:
+  selfcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Shell syntax (bash -n)
+        run: |
+          for f in setup.sh scripts/*.sh .githooks/pre-commit; do
+            [ -f "$f" ] || continue
+            bash -n "$f" && echo "ok  $f"
+          done
+
+      - name: Python compiles
+        run: python3 -m py_compile hooks/*.py .githooks/*.py
+
+      - name: Selfcheck — hook fixtures + reference lint
+        run: bash scripts/selfcheck.sh
+
+      - name: Skill mirror is in sync
+        run: |
+          bash scripts/sync.sh
+          if ! git diff --quiet; then
+            echo "::error::.claude/skills is out of sync with skills/ — run scripts/sync.sh and commit."
+            git --no-pager diff --stat
+            exit 1
+          fi
