@@ -90,10 +90,10 @@ Push-Location $ProjectPath
 Remove-Item -Recurse -Force -ErrorAction SilentlyContinue ".git"           # repo git
 Remove-Item -Recurse -Force -ErrorAction SilentlyContinue ".claude-plugin" # plugin manifest
 Remove-Item -Recurse -Force -ErrorAction SilentlyContinue "skills"         # canonical plugin skills (workspace uses .claude/skills)
-Remove-Item -Force -ErrorAction SilentlyContinue "hooks\hooks.json"        # plugin hook config (workspace uses .claude/settings.json)
+Remove-Item -Force -ErrorAction SilentlyContinue "hooks/hooks.json"        # plugin hook config (workspace uses .claude/settings.json)
 Remove-Item -Force -ErrorAction SilentlyContinue "setup.sh"
 Remove-Item -Force -ErrorAction SilentlyContinue "setup-windows.ps1"
-Remove-Item -Force -ErrorAction SilentlyContinue "scripts\sync.sh"         # repo dev tool
+Remove-Item -Force -ErrorAction SilentlyContinue "scripts/sync.sh"         # repo dev tool
 Remove-Item -Force -ErrorAction SilentlyContinue "README.md"               # repo readme
 Pop-Location
 
