@@ -4,7 +4,9 @@ Generate a weekly retrospective from your closing reports.
 
 ## Step 1: Gather Data
 
-Read all `notes/daily-summaries/closing-*.md` files from the past 7 days.
+Read all closing reports from the past 7 days: `notes/daily-summaries/closing-*.md`
+(solo workspace) plus any in per-user subfolders `notes/daily-summaries/*/closing-*.md`
+(team workspace — `brain/team.md` lists 2+ users). A team weekly aggregates across everyone.
 Also read `brain/context.md` for current priorities.
 
 ## Step 2: Generate Review

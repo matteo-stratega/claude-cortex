@@ -5,7 +5,7 @@ Generate a quick status overview:
 ## Step 1: Load Context
 
 1. Read `brain/context.md`
-2. Read the latest `notes/daily-summaries/closing-*.md`
+2. Read the latest closing report: `notes/daily-summaries/closing-*.md` (solo workspace), or the most recent under `notes/daily-summaries/*/closing-*.md` (team workspace — `brain/team.md` lists 2+ users)
 
 ## Step 2: Generate Brief
 
