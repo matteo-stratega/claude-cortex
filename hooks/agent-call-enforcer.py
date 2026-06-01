@@ -17,7 +17,8 @@ def main():
         print(json.dumps({"continue": True}))
         return
 
-    message = hook_input.get("message", "").lower()
+    # UserPromptSubmit delivers the user's text in "prompt" (not "message").
+    prompt = hook_input.get("prompt", "").lower()
 
     patterns = [
         r"call\s+([\w-]+)",
@@ -31,16 +32,22 @@ def main():
     stop_words = {"the", "a", "an", "my", "our", "this", "that", "it", "me", "you", "us", "back", "him", "her", "them"}
 
     for pattern in patterns:
-        match = re.search(pattern, message)
+        match = re.search(pattern, prompt)
         if match:
             agent_name = match.group(1)
             if agent_name in stop_words:
                 continue
-            result = {
-                "continue": True,
-                "message": f"REQUIRED: Read agents/{agent_name}.md before responding. Do NOT improvise agent behavior."
-            }
-            print(json.dumps(result))
+            # UserPromptSubmit injects guidance via additionalContext, not "message".
+            print(json.dumps({
+                "hookSpecificOutput": {
+                    "hookEventName": "UserPromptSubmit",
+                    "additionalContext": (
+                        f"The user is calling the '{agent_name}' agent. Read "
+                        f"agents/{agent_name}.md first and respond AS that agent. "
+                        f"Do NOT improvise its behavior. If the file does not exist, say so."
+                    ),
+                }
+            }))
             return
 
     print(json.dumps({"continue": True}))
