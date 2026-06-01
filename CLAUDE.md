@@ -24,7 +24,18 @@ On session start:
 | `/weekly` | Weekly retrospective — what shipped, patterns, next week priorities |
 | `/setup` | First-time guided setup (run once after cloning) |
 
-Skills live in `skills/`. Add your own by dropping a markdown file there.
+Each skill is a directory `.claude/skills/<name>/SKILL.md` — the folder name is
+the command you type. Add your own by creating `.claude/skills/<name>/SKILL.md`
+with `name` + `description` frontmatter; the `description` lets Claude auto-load
+it when relevant.
+
+## Team mode
+
+By default this is a solo workspace. To share it with a team, list handles in
+`brain/team.md` (`users:`). With 2+ users, `/start` and `/close` identify who is
+in the session and keep per-person closing reports under
+`notes/daily-summaries/<user>/`, so no one overwrites anyone else. Shared-brain
+edits are logged to `brain/changelog.md` for teammates to see on `/start`.
 
 ## Hooks
 
@@ -99,11 +110,13 @@ Keep responses focused:
 ## Project Structure
 
 ```
-cortex/
+cortex/                          # your workspace
 ├── CLAUDE.md                    # Master instructions
 ├── PATTERNS.md                  # Recipes and proven patterns
 ├── brain/
 │   ├── context.md               # Index (loads every session, ~60 lines)
+│   ├── team.md                  # Solo by default; list handles for team mode
+│   ├── changelog.md             # Shared-brain change log (team mode)
 │   └── contexts/                # Area-specific context (load on demand)
 │       ├── work.md              # Clients, deals, revenue
 │       ├── projects.md          # Active builds
@@ -114,19 +127,15 @@ cortex/
 │   ├── growth-hacker.md         # Growth experiments + outreach
 │   └── war-council.md           # Multi-perspective decisions
 ├── examples/                    # What the system looks like in action
-│   ├── context-filled.md        # Brain after 2 weeks of use
-│   ├── closing-report.md        # What /close generates
-│   └── war-council-output.md    # War council in action
+├── hooks/                       # 3 enforcement scripts (.py)
 ├── scripts/
 │   ├── morning-brief.sh         # Automated daily brief (cron/launchd)
 │   └── com.cortex.morning-brief.plist  # macOS launchd config
-├── notes/
-│   └── daily-summaries/         # Session reports from /close
+├── notes/daily-summaries/       # Session reports from /close
 ├── docs/                        # Final documents
 └── .claude/
-    ├── skills/                  # 7 skills
-    ├── hooks/                   # 3 enforcement scripts
-    └── settings.json            # Hook config
+    ├── skills/                  # 7 skills, each <name>/SKILL.md
+    └── settings.json            # Hook config (clone mode)
 ```
 
 ## Output Style

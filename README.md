@@ -33,7 +33,7 @@ Drop the agents, skills, and hooks into any project:
 /plugin install matteo-stratega/claude-cortex
 ```
 
-You get the 4 agents, 7 skills, and 3 hooks. Your existing project stays as-is. No workspace scaffolding, no brain system — just the capabilities.
+You get the 4 agents, 7 skills, and 3 hooks. Your existing project stays as-is. No workspace scaffolding, no brain system — just the capabilities. Plugin commands are namespaced: `/cortex:start`, `/cortex:close`, and so on.
 
 ### As a full workspace template (recommended for solo builders)
 
@@ -46,7 +46,12 @@ claude
 /setup
 ```
 
-`/setup` walks you through filling in your context in about 5 minutes.
+The skills register as real slash commands right after cloning — `/start`,
+`/close`, `/brief`, `/plan`, `/review`, `/weekly`. Run `/setup` once; it walks
+you through filling in your context in about 5 minutes.
+
+**Working with a team?** List handles in `brain/team.md` and `/start` + `/close`
+keep per-person session reports so no one overwrites anyone else. Solo by default.
 
 <details>
 <summary><b>One-liner install (Mac/Linux)</b></summary>
@@ -86,16 +91,26 @@ cortex/
 │   ├── context-filled.md        # Brain after 2 weeks of real use
 │   ├── closing-report.md        # What /close generates
 │   └── war-council-output.md    # War council decision example
+├── skills/                      # 7 skills — canonical source, each <name>/SKILL.md
+├── hooks/                       # 3 enforcement hooks + hooks.json (plugin mode)
 ├── scripts/
+│   ├── sync.sh                  # Mirrors skills/ -> .claude/skills/
 │   ├── morning-brief.sh         # Automated daily brief (cron/launchd)
 │   └── com.cortex.morning-brief.plist  # macOS launchd config
 ├── notes/daily-summaries/       # Session reports from /close
 ├── docs/                        # Final documents
+├── .claude-plugin/plugin.json   # Plugin manifest (/plugin install)
 └── .claude/
-    ├── skills/                  # 7 skills
-    ├── hooks/                   # 3 enforcement hooks
-    └── settings.json            # Hook config
+    ├── skills/                  # GENERATED mirror of skills/ (clone mode) — run sync.sh
+    └── settings.json            # Hook config (clone mode)
 ```
+
+> **One source of truth.** Skills are authored in `skills/<name>/SKILL.md`.
+> `.claude/skills/` is a generated mirror — Claude Code registers project skills
+> only from `.claude/skills/`, so the mirror is what makes a direct clone expose
+> `/start`, `/close`, etc. Edit `skills/`, then run `bash scripts/sync.sh`; never
+> hand-edit `.claude/skills/`. The installers don't embed file copies — they clone
+> this repo and assemble a clean workspace, so they can't drift from source.
 
 ## How It Works
 
