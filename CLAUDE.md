@@ -30,6 +30,10 @@ the command you type. Add your own by creating `.claude/skills/<name>/SKILL.md`
 with `name` + `description` frontmatter; the `description` lets Claude auto-load
 it when relevant.
 
+The `soul` skill is the exception: it's `user-invocable: false`, so it never
+appears as a slash command — it's the agent's identity and hard limits, loaded
+automatically. Edit `.claude/skills/soul/SKILL.md` to make the agent yours.
+
 ## Team mode
 
 By default this is a solo workspace. To share it with a team, list handles in
@@ -83,6 +87,7 @@ When an agent is called:
 | Content Strategist | Blog, social, email, content planning | `agents/content-strategist.md` |
 | Growth Hacker | Outreach, funnels, experiments, channels | `agents/growth-hacker.md` |
 | War Council | Multi-perspective decision making | `agents/war-council.md` |
+| Archivist | Workspace organization, git hygiene, commits | `agents/archivist.md` |
 
 ### Agent Auto-Routing (Optional)
 

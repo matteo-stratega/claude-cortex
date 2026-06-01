@@ -33,7 +33,7 @@ Drop the agents, skills, and hooks into any project:
 /plugin install matteo-stratega/claude-cortex
 ```
 
-You get the 4 agents, 8 skills, and 6 hooks. Your existing project stays as-is. No workspace scaffolding, no brain system — just the capabilities. Plugin commands are namespaced: `/cortex:start`, `/cortex:close`, and so on.
+You get the 5 agents, 8 skills, and 6 hooks. Your existing project stays as-is. No workspace scaffolding, no brain system — just the capabilities. Plugin commands are namespaced: `/cortex:start`, `/cortex:close`, and so on.
 
 ### As a full workspace template (recommended for solo builders)
 
@@ -82,11 +82,12 @@ cortex/
 │       ├── work.md              # Clients, deals, revenue
 │       ├── projects.md          # Active builds
 │       └── content.md           # Blog, social, video
-├── agents/                      # 4 ready-to-use agents
+├── agents/                      # 5 ready-to-use agents
 │   ├── cto.md                   # Think > Plan > Execute, debugging protocol
 │   ├── content-strategist.md    # Framework-first writing, voice rules
 │   ├── growth-hacker.md         # ICE scoring, funnel audits
-│   └── war-council.md           # Multi-perspective decision making
+│   ├── war-council.md           # Multi-perspective decision making
+│   └── archivist.md             # Workspace organization, git hygiene
 ├── examples/                    # What it looks like in action
 │   ├── context-filled.md        # Brain after 2 weeks of real use
 │   ├── closing-report.md        # What /close generates
@@ -132,6 +133,7 @@ Agents are markdown files with distinct personalities, protocols, and decision r
 | **Content Strategist** | Framework-first writing (PAS, AIDA, Hook-Story-Offer). Self-critique before publishing. Voice rules that kill AI-sounding copy. |
 | **Growth Hacker** | ICE scoring for experiments. Funnel audits. Experiment templates with hypothesis + success criteria. |
 | **War Council** | Three perspectives on any decision: Operator (speed), Strategist (long-term), Critic (failure modes). One clear recommendation. |
+| **Archivist** | Workspace organization and git hygiene. Groups changes into clean commits, archives instead of deleting, never pushes without approval. |
 
 Each agent has hard limits and decision rules. They don't just answer differently — they *think* differently.
 
