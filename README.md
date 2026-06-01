@@ -33,7 +33,7 @@ Drop the agents, skills, and hooks into any project:
 /plugin install matteo-stratega/claude-cortex
 ```
 
-You get the 4 agents, 7 skills, and 3 hooks. Your existing project stays as-is. No workspace scaffolding, no brain system — just the capabilities. Plugin commands are namespaced: `/cortex:start`, `/cortex:close`, and so on.
+You get the 4 agents, 8 skills, and 6 hooks. Your existing project stays as-is. No workspace scaffolding, no brain system — just the capabilities. Plugin commands are namespaced: `/cortex:start`, `/cortex:close`, and so on.
 
 ### As a full workspace template (recommended for solo builders)
 
@@ -91,8 +91,8 @@ cortex/
 │   ├── context-filled.md        # Brain after 2 weeks of real use
 │   ├── closing-report.md        # What /close generates
 │   └── war-council-output.md    # War council decision example
-├── skills/                      # 7 skills — canonical source, each <name>/SKILL.md
-├── hooks/                       # 3 enforcement hooks + hooks.json (plugin mode)
+├── skills/                      # 8 skills — canonical source, each <name>/SKILL.md
+├── hooks/                       # 6 enforcement hooks + hooks.json (plugin mode)
 ├── scripts/
 │   ├── sync.sh                  # Mirrors skills/ -> .claude/skills/
 │   ├── morning-brief.sh         # Automated daily brief (cron/launchd)
@@ -148,6 +148,7 @@ Each agent has hard limits and decision rules. They don't just answer differentl
 | `/plan` | Breaks any task into phases with verification criteria |
 | `/review` | Code review checklist — security, simplicity, edge cases |
 | `/weekly` | Weekly retrospective — what shipped, time patterns, next week priorities |
+| `/daily-wrap` | End-of-day consolidation — merges sessions, updates context, preps tomorrow |
 
 Add your own: drop a markdown file in `skills/`.
 
@@ -158,8 +159,11 @@ Hooks fire on events. You don't invoke them. They just run.
 | Hook | Trigger | Purpose |
 |------|---------|---------|
 | `file-guard.py` | PreToolUse | **Blocks** writes to `.env`, credentials, key files. Warns on CLAUDE.md edits. |
+| `simplest-approach-enforcer.py` | PreToolUse | **Blocks** overcomplicated tooling (e.g. browser automation to read a page) |
 | `agent-call-enforcer.py` | UserPromptSubmit | Forces reading agent files instead of improvising |
 | `context-auto-save.py` | Stop | Reminds to update context when running /close |
+| `lazy-question-blocker.py` | Stop | Pushes Claude to find answers itself before asking you |
+| `verification-gate.py` | Stop | **Blocks** "it's done" claims with no verification evidence |
 
 ### Morning Brief — Automated Daily Status
 

@@ -22,6 +22,7 @@ On session start:
 | `/plan` | Breaks a task into phases with verification criteria |
 | `/review` | Code review checklist (security, simplicity, edge cases) |
 | `/weekly` | Weekly retrospective — what shipped, patterns, next week priorities |
+| `/daily-wrap` | End-of-day consolidation — merges sessions, updates context, preps tomorrow |
 | `/setup` | First-time guided setup (run once after cloning) |
 
 Each skill is a directory `.claude/skills/<name>/SKILL.md` — the folder name is
@@ -44,8 +45,11 @@ Hooks fire automatically on events. Configured in `hooks/hooks.json` (plugin mod
 | Hook | Trigger | Purpose |
 |------|---------|---------|
 | `file-guard.py` | PreToolUse | Blocks writes to credential files, warns on CLAUDE.md edits |
+| `simplest-approach-enforcer.py` | PreToolUse | Blocks overcomplicated tooling (e.g. browser automation to read a page) |
 | `agent-call-enforcer.py` | UserPromptSubmit | Forces reading agent files instead of improvising |
 | `context-auto-save.py` | Stop | Reminds to update context when running /close |
+| `lazy-question-blocker.py` | Stop | Pushes Claude to find answers itself before asking you |
+| `verification-gate.py` | Stop | Blocks "it's done" claims that include no verification evidence |
 
 ## Agents
 

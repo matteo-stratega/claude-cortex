@@ -9,6 +9,10 @@
           {
             "type": "command",
             "command": "python3 hooks/file-guard.py"
+          },
+          {
+            "type": "command",
+            "command": "python3 hooks/simplest-approach-enforcer.py"
           }
         ]
       }
@@ -29,6 +33,14 @@
           {
             "type": "command",
             "command": "python3 hooks/context-auto-save.py"
+          },
+          {
+            "type": "command",
+            "command": "python3 hooks/lazy-question-blocker.py"
+          },
+          {
+            "type": "command",
+            "command": "python3 hooks/verification-gate.py"
           }
         ]
       }

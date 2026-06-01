@@ -1,5 +1,5 @@
 {
-  "description": "Cortex plugin hooks — file protection, agent routing enforcement, context auto-save",
+  "description": "Cortex plugin hooks — file protection, agent routing enforcement, context auto-save, autonomy enforcement",
   "hooks": {
     "PreToolUse": [
       {
@@ -7,6 +7,11 @@
           {
             "type": "command",
             "command": "python3 ${CLAUDE_PLUGIN_ROOT}/hooks/file-guard.py",
+            "timeout": 10
+          },
+          {
+            "type": "command",
+            "command": "python3 ${CLAUDE_PLUGIN_ROOT}/hooks/simplest-approach-enforcer.py",
             "timeout": 10
           }
         ]
@@ -29,6 +34,16 @@
           {
             "type": "command",
             "command": "python3 ${CLAUDE_PLUGIN_ROOT}/hooks/context-auto-save.py",
+            "timeout": 10
+          },
+          {
+            "type": "command",
+            "command": "python3 ${CLAUDE_PLUGIN_ROOT}/hooks/lazy-question-blocker.py",
+            "timeout": 10
+          },
+          {
+            "type": "command",
+            "command": "python3 ${CLAUDE_PLUGIN_ROOT}/hooks/verification-gate.py",
             "timeout": 10
           }
         ]
