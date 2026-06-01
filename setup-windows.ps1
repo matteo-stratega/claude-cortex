@@ -112,8 +112,10 @@ if (-not (Test-Path ".git")) {
     git add -A
     git commit -m "Initial setup - Cortex" --quiet
 }
+# Activate the brain tripwire (blocks context.md bloat + broken frontmatter).
+git config core.hooksPath .githooks
 Pop-Location
-Write-Host "  + Git initialized" -ForegroundColor Green
+Write-Host "  + Git initialized (brain tripwire active via .githooks)" -ForegroundColor Green
 
 # ============================================
 # DONE!

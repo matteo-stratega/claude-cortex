@@ -76,6 +76,12 @@ Update `brain/context.md`:
 
 **Principle:** `context.md` is a SNAPSHOT of current state, not a history log. The history lives in closing reports.
 
+**Hard rule — keep `context.md` lean.** Target ~60 lines; hard ceiling ~80 lines / 12KB.
+Never append session narrative or a running log to it — that belongs in
+`notes/daily-summaries/`. The same goes for `brain/contexts/*` files (keep each well
+under ~35KB). If the brain tripwire is enabled (`git config core.hooksPath .githooks`),
+a commit that bloats these files is blocked automatically — don't bypass it, trim instead.
+
 Also update the relevant `brain/contexts/*.md` file if project statuses changed.
 
 ## Step 2a: Log shared-brain changes (TEAM only)

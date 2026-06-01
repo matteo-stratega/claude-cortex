@@ -121,7 +121,9 @@ if [ ! -d ".git" ]; then
     git add -A
     git commit -m "Initial setup — Cortex" --quiet
 fi
-echo -e "${GREEN}  ✓ Git initialized${NC}"
+# Activate the brain tripwire (blocks context.md bloat + broken frontmatter).
+git config core.hooksPath .githooks 2>/dev/null || true
+echo -e "${GREEN}  ✓ Git initialized (brain tripwire active via .githooks)${NC}"
 
 # ============================================
 # DONE!

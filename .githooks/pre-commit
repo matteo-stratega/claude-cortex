@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+#
+# Cortex tripwire — keeps the brain lean and frontmatter valid.
+#
+# context.md is meant to be a SNAPSHOT, not a history log. Left unchecked it
+# slowly grows into a multi-hundred-KB file that eats your context window every
+# session. This hook blocks the commit before that happens.
+#
+# Enable:        git config core.hooksPath .githooks
+# Bypass once:   git commit --no-verify
+#
+set -eu
+
+CTX="brain/context.md"
+CTX_MAX_LINES=80          # context.md targets ~60 lines; 80 is the hard ceiling
+CTX_MAX_BYTES=12000
+SUB_MAX_BYTES=35000       # per brain/contexts/*.md file
+
+fail=0
+staged=$(git diff --cached --name-only --diff-filter=ACM)
+
+# 1. context.md size ceiling
+if printf '%s\n' "$staged" | grep -qx "$CTX" && [ -f "$CTX" ]; then
+    lines=$(wc -l < "$CTX" | tr -d ' ')
+    bytes=$(wc -c < "$CTX" | tr -d ' ')
+    if [ "$lines" -gt "$CTX_MAX_LINES" ] || [ "$bytes" -gt "$CTX_MAX_BYTES" ]; then
+        echo "BLOCKED: $CTX is ${lines} lines / ${bytes} bytes (limit ${CTX_MAX_LINES} lines / ${CTX_MAX_BYTES} bytes)."
+        echo "  context.md is a SNAPSHOT — move session history into notes/daily-summaries/ closings."
+        fail=1
+    fi
+fi
+
+# 2. sub-context size ceiling
+printf '%s\n' "$staged" | grep -E '^brain/contexts/.*\.md$' | while IFS= read -r f; do
+    [ -f "$f" ] || continue
+    bytes=$(wc -c < "$f" | tr -d ' ')
+    if [ "$bytes" -gt "$SUB_MAX_BYTES" ]; then
+        echo "BLOCKED: $f is ${bytes} bytes (limit ${SUB_MAX_BYTES}). Split or trim it."
+        # touch a marker so the parent shell sees the failure (subshell can't set fail)
+        echo "blocked" > "$(git rev-parse --git-dir)/.tripwire-fail"
+    fi
+done
+if [ -f "$(git rev-parse --git-dir)/.tripwire-fail" ]; then
+    rm -f "$(git rev-parse --git-dir)/.tripwire-fail"
+    fail=1
+fi
+
+# 3. YAML frontmatter must parse (paths passed as argv — never interpolated)
+PY=$(command -v python3 || command -v python || true)
+md=$(printf '%s\n' "$staged" | grep -E '\.md$' || true)
+if [ -n "$md" ] && [ -n "$PY" ]; then
+    printf '%s\n' "$md" | tr '\n' '\0' | xargs -0 "$PY" .githooks/check_frontmatter.py || fail=1
+fi
+
+if [ "$fail" -ne 0 ]; then
+    echo ""
+    echo "Commit blocked by .githooks/pre-commit. Fix the above, or bypass once with: git commit --no-verify"
+    exit 1
+fi

@@ -55,6 +55,11 @@ Hooks fire automatically on events. Configured in `hooks/hooks.json` (plugin mod
 | `lazy-question-blocker.py` | Stop | Pushes Claude to find answers itself before asking you |
 | `verification-gate.py` | Stop | Blocks "it's done" claims that include no verification evidence |
 
+Separately, `.githooks/pre-commit` is a **git** tripwire (not a Claude hook): it
+blocks commits that bloat `brain/context.md` or break YAML frontmatter. `setup.sh`
+enables it automatically; in a direct clone, turn it on with
+`git config core.hooksPath .githooks`.
+
 ## Agents
 
 Agent definitions live in `agents/`. Each agent has its own personality, protocol, and decision rules.
