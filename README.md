@@ -1,6 +1,6 @@
 <p align="center">
   <h1 align="center">Cortex</h1>
-  <p align="center">An operating system for Claude Code.<br/>Persistent memory, specialized agents, auto-loading skills, enforcement hooks.</p>
+  <p align="center">An operating system for Claude Code.<br/>Native memory, specialized agents, auto-loading skills, and enforcement hooks — zero dependencies, one command.</p>
 </p>
 
 <p align="center">
@@ -19,6 +19,18 @@
 **This is the skeleton. You add the muscle.**
 
 I use this exact architecture to run my solo consultancy — 9 projects, 160+ tasks shipped, 36 agents. The repo is the business. [Full story here.](https://stratega.co/blog/my-ai-brain-part-2-one-month-later)
+
+<!-- TODO: add a 15-second demo GIF here — a session loop (/start → work → /close) with memory recalling a fact next session. This is the #1 conversion surface. -->
+
+**What you get, in one command:**
+
+- **Persistent memory** — Claude remembers across sessions. Native auto memory, no database, no MCP server, no local model.
+- **5 agents** — CTO, content strategist, growth hacker, war council, archivist. Each one *thinks* differently, not just answers differently.
+- **10 skills** — `/start`, `/close`, `/brief`, `/plan`, `/review`, `/weekly`, `/daily-wrap`, `/setup`, plus background identity + memory.
+- **6 enforcement hooks** — block credential writes, demand verification before "done", stop lazy questions. They actually fire (tested in CI).
+- **Solo or team** — per-person session reports over a shared brain. Switch by listing names in one file.
+
+Works as a `/plugin install` *or* a full cloned workspace. Mac, Linux, Windows.
 
 **Prerequisites:** [Node.js](https://nodejs.org) (LTS) + [Python 3](https://python.org) + [Claude Code](https://claude.ai) (Pro $20/mo or Max $100/mo)
 
