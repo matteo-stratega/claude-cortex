@@ -1,3 +1,8 @@
+---
+name: brief
+description: Quick daily status overview (~20 lines) — focus, priorities, blockers, key numbers. Use when the user asks for a brief, a daily status, or "what's on today".
+---
+
 # Daily Brief
 
 Generate a quick status overview:

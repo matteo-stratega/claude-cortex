@@ -1,3 +1,8 @@
+---
+name: close
+description: Session close ritual. Writes the closing report and updates the brain context. Use when the user ends a work session — says "close", "wrap up", "end of day", or "done for today".
+---
+
 # Session Close
 
 Execute the session close protocol.

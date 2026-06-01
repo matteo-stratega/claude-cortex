@@ -1,3 +1,8 @@
+---
+name: plan
+description: Break a task into phases with verification criteria before building. Use when the user asks to plan a task, feature, or project, or wants an implementation breakdown.
+---
+
 # Plan
 
 Create a structured plan for a task:

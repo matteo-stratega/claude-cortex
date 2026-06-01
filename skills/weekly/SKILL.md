@@ -1,3 +1,8 @@
+---
+name: weekly
+description: Weekly retrospective from closing reports — what shipped, decisions, patterns, next-week priorities. Use when the user asks for a weekly review or retrospective.
+---
+
 # Weekly Review
 
 Generate a weekly retrospective from your closing reports.

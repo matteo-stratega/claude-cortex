@@ -1,3 +1,8 @@
+---
+name: start
+description: Session start ritual. Loads context, checks the last closing report, and proposes priorities. Use when the user begins a work session — says "start", "let's begin", "good morning", or asks what to work on today.
+---
+
 # Session Start
 
 Execute the session start protocol.

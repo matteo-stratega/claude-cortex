@@ -1,3 +1,8 @@
+---
+name: review
+description: Code review checklist — security, simplicity, edge cases. Use when the user asks to review code, a diff, or a pull request.
+---
+
 # Code Review
 
 Execute a focused code review:

@@ -1,3 +1,9 @@
+---
+name: setup
+description: First-time guided workspace setup. Run once after cloning to fill in your context files.
+disable-model-invocation: true
+---
+
 # First-Time Setup
 
 Guide the user through setting up their workspace. Run this once after cloning.
