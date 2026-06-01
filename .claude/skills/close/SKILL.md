@@ -84,6 +84,15 @@ a commit that bloats these files is blocked automatically — don't bypass it, t
 
 Also update the relevant `brain/contexts/*.md` file if project statuses changed.
 
+## Step 2b: Persist durable learnings (auto memory)
+
+If this session produced something worth remembering across sessions — a
+correction the user gave you, a preference, a non-obvious project constraint, a
+useful reference — save it to auto memory following the `memory` skill's house
+style (typed topic file + a one-line index entry in `MEMORY.md`). Skip anything
+derivable from the code, git, or CLAUDE.md, and anything that only mattered
+today. Most sessions save nothing; that's fine.
+
 ## Step 2a: Log shared-brain changes (TEAM only)
 
 If you edited any shared brain file this session (`brain/context.md`,

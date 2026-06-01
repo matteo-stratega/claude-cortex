@@ -33,7 +33,7 @@ Drop the agents, skills, and hooks into any project:
 /plugin install matteo-stratega/claude-cortex
 ```
 
-You get the 5 agents, 8 skills, and 6 hooks. Your existing project stays as-is. No workspace scaffolding, no brain system — just the capabilities. Plugin commands are namespaced: `/cortex:start`, `/cortex:close`, and so on.
+You get the 5 agents, 10 skills, and 6 hooks. Your existing project stays as-is. No workspace scaffolding, no brain system — just the capabilities. Plugin commands are namespaced: `/cortex:start`, `/cortex:close`, and so on.
 
 ### As a full workspace template (recommended for solo builders)
 
@@ -92,7 +92,7 @@ cortex/
 │   ├── context-filled.md        # Brain after 2 weeks of real use
 │   ├── closing-report.md        # What /close generates
 │   └── war-council-output.md    # War council decision example
-├── skills/                      # 8 skills — canonical source, each <name>/SKILL.md
+├── skills/                      # 10 skills — canonical source, each <name>/SKILL.md
 ├── hooks/                       # 6 enforcement hooks + hooks.json (plugin mode)
 ├── scripts/
 │   ├── sync.sh                  # Mirrors skills/ -> .claude/skills/
@@ -123,6 +123,18 @@ Why? One monolithic context file means Claude processes your deal pipeline when 
 
 **Rule: never load all context files at once.**
 
+### Memory — Persistent, Native, Zero-Dependency
+
+The brain (above) is the context *you* author. **Memory** is what Claude
+accumulates on its own. Claude Code's native auto memory is on by default: it
+saves learnings, corrections, and preferences to
+`~/.claude/projects/<project>/memory/` and recalls them automatically next
+session — no database, no MCP server, no local model. Cortex adds the **house
+style** (the `memory` skill): `MEMORY.md` stays a lean index, each fact gets its
+own typed topic file (`user` / `feedback` / `project` / `reference`), linked with
+`[[…]]`. `/close` and `/daily-wrap` feed durable learnings in; `/memory` browses
+them. Memory is machine-local and never committed — it's the agent's, not the repo's.
+
 ### Agents — AI Personalities
 
 Agents are markdown files with distinct personalities, protocols, and decision rules. Say "call [name]" to activate one.
@@ -152,7 +164,10 @@ Each agent has hard limits and decision rules. They don't just answer differentl
 | `/weekly` | Weekly retrospective — what shipped, time patterns, next week priorities |
 | `/daily-wrap` | End-of-day consolidation — merges sessions, updates context, preps tomorrow |
 
-Add your own: drop a markdown file in `skills/`.
+Two more skills run in the background (not slash commands): **`soul`** (identity
++ hard limits) and **`memory`** (memory house-style). They load automatically.
+
+Add your own: drop a `<name>/SKILL.md` in `skills/`.
 
 ### Hooks — Invisible Enforcement
 

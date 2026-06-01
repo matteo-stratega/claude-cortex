@@ -30,9 +30,21 @@ the command you type. Add your own by creating `.claude/skills/<name>/SKILL.md`
 with `name` + `description` frontmatter; the `description` lets Claude auto-load
 it when relevant.
 
-The `soul` skill is the exception: it's `user-invocable: false`, so it never
-appears as a slash command — it's the agent's identity and hard limits, loaded
-automatically. Edit `.claude/skills/soul/SKILL.md` to make the agent yours.
+Two skills are `user-invocable: false` — they never appear as slash commands,
+they load automatically as background context:
+- **`soul`** — the agent's identity and hard limits. Edit `.claude/skills/soul/SKILL.md` to make the agent yours.
+- **`memory`** — the house style for persistent memory (below).
+
+## Memory
+
+Claude Code's native **auto memory** is on by default: across sessions Claude
+saves learnings to `~/.claude/projects/<project>/memory/` (machine-local, not
+committed) and recalls them automatically. `.claude/settings.json` sets
+`autoMemoryEnabled: true` to make that explicit. The `memory` skill defines the
+house style — `MEMORY.md` as a lean index plus one typed topic file per fact —
+so memory stays organized instead of sprawling. `/close` and `/daily-wrap` save
+durable learnings there. Browse it with `/memory`. No database, no MCP, no
+external dependency.
 
 ## Team mode
 
@@ -148,7 +160,7 @@ cortex/                          # your workspace
 ├── notes/daily-summaries/       # Session reports from /close
 ├── docs/                        # Final documents
 └── .claude/
-    ├── skills/                  # 7 skills, each <name>/SKILL.md
+    ├── skills/                  # 10 skills, each <name>/SKILL.md
     └── settings.json            # Hook config (clone mode)
 ```
 

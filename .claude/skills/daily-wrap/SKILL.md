@@ -65,11 +65,12 @@ If tomorrow is a working day, create `notes/daily-summaries/prep-DDMMYYYY.md`:
 If tomorrow is a weekend, skip the prep file and note in the closing:
 "Weekend ahead — priorities resume Monday."
 
-## Step 5: Persist to memory (optional)
+## Step 5: Persist to memory
 
-If this workspace uses a memory MCP, save the day's durable facts: key decisions
-(with date), lessons learned, recurring patterns, strategy changes. Skip if you
-have no memory tool — the closing report already holds the history.
+Save the day's durable facts to auto memory following the `memory` skill's house
+style: key decisions (with absolute dates), lessons learned, recurring patterns,
+strategy changes. Save only what stays useful in future sessions — the closing
+report already holds the full history.
 
 ## Step 6: Confirm
 
