@@ -12,44 +12,80 @@ and a distribution model that can't drift from source.
 ### Added
 - **Native memory** — zero-dependency auto-memory plus a `memory` skill
   convention, so the agent persists durable facts across sessions.
-- **Multi-user, config-driven setup** — team members live in `brain/team.md`;
-  no names are hardcoded anywhere.
-- **CI** — GitHub Actions runs shell-syntax, Python-compile, `selfcheck.sh`
-  (hook fixtures + reference lint), and a skill-mirror drift check on every
-  push and PR. Badge in the README.
-- `CONTRIBUTING.md`, `SECURITY.md`, `CODE_OF_CONDUCT.md`, issue/PR templates.
+- **Config-driven multi-user** — session routing per operator; team members live
+  in `brain/team.md` with no names hardcoded anywhere.
+- **Upstream Tier 1** — autonomy hooks + `daily-wrap` skill.
+- **Upstream Tier 2** — `soul` (template) + `archivist` agent.
+- **`selfcheck.sh`** — fixture tests for every hook + a reference lint, run in CI.
+- **Brain tripwire** — a `.githooks` pre-commit guardrail that blocks `context.md`
+  bloat and broken frontmatter, plus a `/close` hard-rule.
+- **CI** — GitHub Actions runs shell-syntax, Python-compile, `selfcheck.sh`, and a
+  skill-mirror drift check on every push and PR. Badge in the README.
+- `SECURITY.md`, `CODE_OF_CONDUCT.md`, `CONTRIBUTING.md`, `CHANGELOG.md`, and
+  issue/PR templates.
 
 ### Changed
-- **Drift-proof distribution** — the installer now clones the repo and assembles
-  a clean workspace from its files instead of embedding copies (installer
-  shrank from 3368 to 286 lines). Canonical skills live in `skills/<name>/`
-  and are mirrored into `.claude/skills/` by `scripts/sync.sh`.
+- **Drift-proof distribution** — installers now clone the repo and assemble a
+  clean workspace from its files instead of embedding copies (installers shrank
+  from 3368 to 286 lines).
+- **Skills moved to `SKILL.md` directory format**; canonical skills live in
+  `skills/<name>/` and are mirrored into `.claude/skills/` by a generated
+  `scripts/sync.sh`.
+- Sharper README hook — tagline + "what you get" + demo slot.
 
 ### Fixed
 - **`file-guard` now actually blocks.** It emits the correct
-  `hookSpecificOutput.permissionDecision: "deny"` schema; the previous
-  top-level `{"continue": false}` did not deny a tool write.
-- `context-auto-save` and other advisory hooks surface notes via
-  `systemMessage` instead of the non-existent `message` field.
-- Ported tech-debt fixes from the host workspace: `agent-call-enforcer` no-op,
-  brain tripwire (`.githooks` blocking context bloat / broken frontmatter),
-  deterministic morning-brief context injection.
+  `hookSpecificOutput.permissionDecision: "deny"` schema (live-verified); the
+  previous top-level `{"continue": false}` did not deny a tool write.
+- **`agent-call-enforcer` was a no-op** — it read the wrong field and emitted the
+  wrong output; now it injects the right guidance via `additionalContext`.
+- `morning-brief` injects context deterministically + a hollow-output tripwire.
+- `daily-wrap` auto-loads (dropped `disable-model-invocation`).
+- Forward-slash paths in `setup-windows.ps1` for portability.
 
 ## [2.1] — 2026-04-20
 
+Plugin distribution, plus the full v2 build-out and two hardening rounds shipped
+in this tag (development through 2026-03-06).
+
 ### Added
 - **Plugin format** — Cortex installs as a Claude Code plugin via
-  `/plugin install`, with skills namespaced as `/cortex:<name>`.
+  `/plugin install` (#1), with skills namespaced as `/cortex:<name>`.
+- **Full Cortex v2 build-out** — 4 agents, 7 skills, 3 enforcement hooks, a
+  patterns/recipes guide (`PATTERNS.md`), and the automated morning brief.
+
+### Changed
+- **Setup-script parity** — `setup.sh` and `setup-windows.ps1` assemble the same
+  33 files (eliminated content drift between the two).
+- **README glow-up** — badges, collapsible sections, "what I built" section,
+  corrected links.
+
+### Fixed
+- **25 bugs** caught across two multi-agent review rounds (10 + 15).
+- `file-guard` credential coverage; `.gitignore` now matches the file-guard
+  blocked names.
+- Prerequisites ordered before quickstart; Python 3 listed as a prerequisite;
+  Xcode Command Line Tools added to prereqs/troubleshooting.
+- `context.md` kept under 60 lines with a realistic token budget.
 
 ## [2.0] — 2026-02-19
 
 ### Added
-- Modular **brain** (`brain/context.md` + sub-contexts), auto-loading **skills**,
-  enforcement **hooks**, and specialized **agents**.
+- **v2 architecture foundation** — modular brain (`brain/context.md` +
+  sub-contexts), auto-loading skills, enforcement hooks, and specialized agents.
 
 ## [1.0] — 2026-02-19
 
-- Original setup from the Part 1 video walkthrough.
+The original Claude Code workspace template from the Part 1 video (developed
+2026-01-13 → 2026-01-16).
+
+### Added
+- **One-click setup** (`setup.sh`) with a two-step install method as the default
+  (more reliable); Gemini CLI included in the one-click setup; English-first docs.
+
+### Fixed
+- npm `EACCES` permission-error troubleshooting; Xcode Command Line Tools added to
+  prerequisites; README fixes (YouTube link, LinkedIn URL).
 
 [2.2.0]: https://github.com/matteo-stratega/claude-cortex/releases/tag/v2.2.0
 [2.1]: https://github.com/matteo-stratega/claude-cortex/releases/tag/v2.1
