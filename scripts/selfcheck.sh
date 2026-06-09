@@ -34,6 +34,22 @@ expect_contains "file-guard denies .env"        file-guard.py \
 expect_absent   "file-guard allows source file" file-guard.py \
   '{"tool_name":"Write","tool_input":{"file_path":"/p/src/app.js"}}' 'deny'
 
+# size-guard: deny an over-ceiling brain index write, allow a small one, ignore the rest.
+# BIG is larger than both ceilings (12KB context.md, 35KB context-<handle>.md).
+BIG=$(printf 'x%.0s' $(seq 1 40000))
+expect_contains "size-guard denies bloated context.md"      size-guard.py \
+  "{\"tool_name\":\"Write\",\"tool_input\":{\"file_path\":\"brain/context.md\",\"content\":\"$BIG\"}}" '"permissionDecision": "deny"'
+expect_contains "size-guard denies bloated context-<user>"  size-guard.py \
+  "{\"tool_name\":\"Write\",\"tool_input\":{\"file_path\":\"brain/context-tester.md\",\"content\":\"$BIG\"}}" '"permissionDecision": "deny"'
+expect_absent   "size-guard allows small context.md"        size-guard.py \
+  '{"tool_name":"Write","tool_input":{"file_path":"brain/context.md","content":"small snapshot"}}' 'deny'
+expect_absent   "size-guard ignores deep context file"      size-guard.py \
+  "{\"tool_name\":\"Write\",\"tool_input\":{\"file_path\":\"brain/contexts/work.md\",\"content\":\"$BIG\"}}" 'deny'
+expect_absent   "size-guard ignores Edit (prune path)"      size-guard.py \
+  "{\"tool_name\":\"Edit\",\"tool_input\":{\"file_path\":\"brain/context.md\"}}" 'deny'
+expect_contains "size-guard survives non-string content"    size-guard.py \
+  '{"tool_name":"Write","tool_input":{"file_path":"brain/context.md","content":null}}' '{}'
+
 # simplest-approach: deny browser automation, allow normal
 expect_contains "simplest denies browser-automation" simplest-approach-enforcer.py \
   '{"tool_name":"Bash","tool_input":{"command":"npx playwright test"}}' '"permissionDecision": "deny"'
