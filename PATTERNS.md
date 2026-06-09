@@ -42,6 +42,26 @@ Context files describe NOW, not history. History lives in `notes/daily-summaries
 | "Auth: working" | "25-Feb: Fixed auth bug (root cause: expired JWT)" |
 | "Pipeline: $5K" | "Closed Acme for $2K, lost Beta Corp (budget)" |
 
+### Per-Operator State (synced teams)
+
+In TEAM mode the brain is shared by default and the 60-line rule keeps one
+`context.md` workable. On a cloud-synced team (Drive, iCloud, Syncthing) that
+single file becomes the bottleneck: it grows past its ceiling because it carries
+everyone's areas, and two people editing it in the same window create a
+conflicted copy.
+
+Set `state_isolation: per-user` in `brain/team.md`. Then:
+
+| File | Holds | Written by |
+|------|-------|-----------|
+| `brain/context.md` | shared header only: team, this-week priorities, cross-person handoffs | anyone, for shared items |
+| `brain/context-<handle>.md` | one operator's deals and areas | that operator only |
+
+`/start` loads the header plus your own file; `/close` writes your file and only
+touches the shared header for cross-person items. Because no two people write the
+same file, sync can't conflict it, and each person prunes their own snapshot. The
+`size-guard` hook caps every `context*.md` at write time as a backstop.
+
 ---
 
 ## Agent Patterns

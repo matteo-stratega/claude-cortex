@@ -59,7 +59,13 @@ Create or append to the report path from Step 0/1a:
 
 ## Step 2: Update context (MANDATORY)
 
-Update `brain/context.md`:
+**Team with `state_isolation: per-user` (check `brain/team.md`):** write your own
+state to `brain/context-<user>.md` (create it if it does not exist yet). Touch the shared `brain/context.md` only for
+shared-header items — this-week priorities you own, or a new cross-person
+handoff/blocker. Never edit another operator's `context-<handle>.md`. The Add /
+Remove rules below apply to whichever file you are updating.
+
+Update `brain/context.md` (or `brain/context-<user>.md` in per-user mode):
 
 ### Add
 - New priorities or decisions
@@ -79,8 +85,10 @@ Update `brain/context.md`:
 **Hard rule — keep `context.md` lean.** Target ~60 lines; hard ceiling ~80 lines / 12KB.
 Never append session narrative or a running log to it — that belongs in
 `notes/daily-summaries/`. The same goes for `brain/contexts/*` files (keep each well
-under ~35KB). If the brain tripwire is enabled (`git config core.hooksPath .githooks`),
-a commit that bloats these files is blocked automatically — don't bypass it, trim instead.
+under ~35KB), and for each `brain/context-<handle>.md` in per-user mode (~35KB).
+Two guards enforce this: the `size-guard` hook blocks an over-ceiling write the
+moment it happens, and the brain tripwire (`git config core.hooksPath .githooks`)
+blocks a bloated commit. Don't bypass either — trim instead.
 
 Also update the relevant `brain/contexts/*.md` file if project statuses changed.
 

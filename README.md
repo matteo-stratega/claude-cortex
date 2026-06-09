@@ -27,7 +27,7 @@ I use this exact architecture to run my solo consultancy — 9 projects, 160+ ta
 - **Persistent memory** — Claude remembers across sessions. Native auto memory, no database, no MCP server, no local model.
 - **5 agents** — CTO, content strategist, growth hacker, war council, archivist. Each one *thinks* differently, not just answers differently.
 - **10 skills** — `/start`, `/close`, `/brief`, `/plan`, `/review`, `/weekly`, `/daily-wrap`, `/setup`, plus background identity + memory.
-- **6 enforcement hooks** — block credential writes, demand verification before "done", stop lazy questions. They actually fire (tested in CI).
+- **7 enforcement hooks** — block credential writes, cap brain bloat at write time, demand verification before "done", stop lazy questions. They actually fire (tested in CI).
 - **Solo or team** — per-person session reports over a shared brain. Switch by listing names in one file.
 
 Works as a `/plugin install` *or* a full cloned workspace. Mac, Linux, Windows.
@@ -46,7 +46,7 @@ Drop the agents, skills, and hooks into any project:
 /plugin install matteo-stratega/claude-cortex
 ```
 
-You get the 5 agents, 10 skills, and 6 hooks. Your existing project stays as-is. No workspace scaffolding, no brain system — just the capabilities. Plugin commands are namespaced: `/cortex:start`, `/cortex:close`, and so on.
+You get the 5 agents, 10 skills, and 7 hooks. Your existing project stays as-is. No workspace scaffolding, no brain system — just the capabilities. Plugin commands are namespaced: `/cortex:start`, `/cortex:close`, and so on.
 
 ### As a full workspace template (recommended for solo builders)
 
@@ -65,6 +65,8 @@ you through filling in your context in about 5 minutes.
 
 **Working with a team?** List handles in `brain/team.md` and `/start` + `/close`
 keep per-person session reports so no one overwrites anyone else. Solo by default.
+For a synced team, set `state_isolation: per-user` to give each person their own
+`brain/context-<handle>.md` so the shared index can't bloat or conflict.
 
 <details>
 <summary><b>One-liner install (Mac/Linux)</b></summary>
@@ -106,7 +108,7 @@ cortex/
 │   ├── closing-report.md        # What /close generates
 │   └── war-council-output.md    # War council decision example
 ├── skills/                      # 10 skills — canonical source, each <name>/SKILL.md
-├── hooks/                       # 6 enforcement hooks + hooks.json (plugin mode)
+├── hooks/                       # 7 enforcement hooks + hooks.json (plugin mode)
 ├── scripts/
 │   ├── sync.sh                  # Mirrors skills/ -> .claude/skills/
 │   ├── morning-brief.sh         # Automated daily brief (cron/launchd)
@@ -189,6 +191,7 @@ Hooks fire on events. You don't invoke them. They just run.
 | Hook | Trigger | Purpose |
 |------|---------|---------|
 | `file-guard.py` | PreToolUse | **Blocks** writes to `.env`, credentials, key files. Warns on CLAUDE.md edits. |
+| `size-guard.py` | PreToolUse | **Blocks** an over-ceiling write to `brain/context*.md` (write-time brain-bloat cap) |
 | `simplest-approach-enforcer.py` | PreToolUse | **Blocks** overcomplicated tooling (e.g. browser automation to read a page) |
 | `agent-call-enforcer.py` | UserPromptSubmit | Forces reading agent files instead of improvising |
 | `context-auto-save.py` | Stop | Reminds to update context when running /close |

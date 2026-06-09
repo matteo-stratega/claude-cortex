@@ -67,7 +67,15 @@ context makes it obvious. If the answer matches no handle, stop and ask again �
 never guess. Below, `<user>` is the matched handle.
 
 ### Step 2: Load context
+First check `state_isolation` in `brain/team.md` (absent means `shared`).
+
 1. Read `brain/context.md` (the shared index — always loaded).
+   - If `state_isolation: per-user`, also read `brain/context-<user>.md` if it
+     exists (this person's own state; on a first session it may not yet — that is
+     fine, `/close` creates it). In that mode `context.md` holds only the shared header
+     (team, this-week priorities, cross-person handoffs); each operator's deals
+     and areas live in their own file. Do not read the other operators'
+     `context-<handle>.md` files.
 2. Read the latest `notes/daily-summaries/<user>/closing-*.md` (this person's own last close).
 3. Read the most recent dated entries in `brain/changelog.md` (if it exists) to
    see what teammates changed in shared brain files since this user last worked.

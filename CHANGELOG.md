@@ -4,6 +4,32 @@ All notable changes to Cortex are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and the project uses [Semantic Versioning](https://semver.org/).
 
+## [2.3.0] — 2026-06-09
+
+Multitenant state. v2.2 isolated multi-user *outputs* (per-person closings) and
+routed sessions; the brain *state* stayed shared and bloat was caught only at
+commit time. That breaks for a synced team: the shared `context.md` grows past
+its ceiling and two people editing it produce a cloud conflicted-copy. This
+release isolates per-operator state and enforces the ceiling at write time.
+
+### Added
+- **Per-operator state isolation** (opt-in) — set `state_isolation: per-user` in
+  `brain/team.md` and each operator's deals/areas live in their own
+  `brain/context-<handle>.md`, while `context.md` keeps only the shared header
+  (team, this-week priorities, cross-person handoffs). Two people never write the
+  same index file, so cloud sync can't conflict it. Names stay config-driven —
+  nothing hardcoded. Default is unchanged (`shared`); solo workspaces are untouched.
+- **`size-guard` hook** — a PreToolUse guard that blocks an over-ceiling write to
+  any `brain/context*.md` the moment it happens (12KB for `context.md`, 35KB per
+  `context-<handle>.md`), the write-time complement to the commit-time tripwire.
+  Cloud-synced teams write between commits, so the commit hook alone never fired.
+
+### Changed
+- `/start` and `/close` honour `state_isolation`: load/write the per-operator file
+  in `per-user` mode, shared `context.md` otherwise.
+- The `.githooks` brain tripwire now also size-checks `brain/context-<handle>.md`.
+- `selfcheck.sh` covers `size-guard` (deny over-ceiling, allow small, ignore the rest).
+
 ## [2.2.0] — 2026-06-05
 
 The "star-ready" release: native memory, multi-user support, hardened hooks,
@@ -87,6 +113,7 @@ The original Claude Code workspace template from the Part 1 video (developed
 - npm `EACCES` permission-error troubleshooting; Xcode Command Line Tools added to
   prerequisites; README fixes (YouTube link, LinkedIn URL).
 
+[2.3.0]: https://github.com/matteo-stratega/claude-cortex/releases/tag/v2.3.0
 [2.2.0]: https://github.com/matteo-stratega/claude-cortex/releases/tag/v2.2.0
 [2.1]: https://github.com/matteo-stratega/claude-cortex/releases/tag/v2.1
 [2.0]: https://github.com/matteo-stratega/claude-cortex/releases/tag/v2.0

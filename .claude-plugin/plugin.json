@@ -1,6 +1,6 @@
 {
   "name": "cortex",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "description": "An operating system for Claude Code. Persistent memory, specialized agents, auto-loading skills, and enforcement hooks for solo builders and developers.",
   "author": {
     "name": "Matteo Lombardi",
