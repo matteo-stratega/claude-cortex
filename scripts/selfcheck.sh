@@ -61,6 +61,10 @@ expect_contains "agent-call fires on 'call cto'"  agent-call-enforcer.py \
   '{"prompt":"call cto please"}' 'additionalContext'
 expect_absent   "agent-call ignores old 'message' field" agent-call-enforcer.py \
   '{"message":"call cto please"}' 'additionalContext'
+expect_absent   "agent-call ignores unknown agent in prose" agent-call-enforcer.py \
+  '{"prompt":"each separate tool call wastes a full round-trip"}' 'additionalContext'
+expect_absent   "agent-call ignores 'call' inside a word" agent-call-enforcer.py \
+  '{"prompt":"recall cto notes"}' 'additionalContext'
 
 # context-auto-save: remind on /close
 expect_contains "context-auto-save reminds on /close" context-auto-save.py \

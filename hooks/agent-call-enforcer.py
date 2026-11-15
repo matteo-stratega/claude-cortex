@@ -7,8 +7,21 @@ Purpose: Forces reading agent files when user calls an agent.
 Setup: Add to .claude/settings.json under hooks.UserPromptSubmit
 """
 import json
+import os
 import sys
 import re
+
+# Where agent definitions can live: the project clone, a project's .claude/,
+# and the plugin install (this file's parent directory).
+AGENT_DIRS = [
+    os.path.join(os.getcwd(), "agents"),
+    os.path.join(os.getcwd(), ".claude", "agents"),
+    os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "agents"),
+]
+
+
+def agent_exists(name):
+    return any(os.path.isfile(os.path.join(d, f"{name}.md")) for d in AGENT_DIRS)
 
 def main():
     try:
@@ -21,11 +34,11 @@ def main():
     prompt = hook_input.get("prompt", "").lower()
 
     patterns = [
-        r"call\s+([\w-]+)",
-        r"chiama\s+([\w-]+)",
-        r"use\s+([\w-]+)\s+agent",
-        r"load\s+([\w-]+)\s+agent",
-        r"switch\s+to\s+([\w-]+)",
+        r"\bcall\s+([\w-]+)",
+        r"\bchiama\s+([\w-]+)",
+        r"\buse\s+([\w-]+)\s+agent",
+        r"\bload\s+([\w-]+)\s+agent",
+        r"\bswitch\s+to\s+([\w-]+)",
     ]
 
     # Filter out common stop words that aren't agent names
@@ -36,6 +49,11 @@ def main():
         if match:
             agent_name = match.group(1)
             if agent_name in stop_words:
+                continue
+            # Only route to agents that exist. Prompts often carry prose like
+            # "each tool call wastes a round-trip"; without this check that
+            # becomes an instruction to impersonate a 'wastes' agent.
+            if not agent_exists(agent_name):
                 continue
             # UserPromptSubmit injects guidance via additionalContext, not "message".
             print(json.dumps({
